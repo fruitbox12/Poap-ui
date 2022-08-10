@@ -40,9 +40,23 @@
 }
 
 .title {
-  margin: 0;
-  line-height: 1.15;
-  font-size: 4rem;
+  font-family: "Poppins";
+  font-style: normal;
+  font-weight: 700;
+  font-size: 40px;
+  text-align: center;
+
+  color: #ffffff;
+}
+
+.subtitle {
+  font-family: "Poppins";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 24px;
+  text-align: center;
+
+  color: #ffffff;
 }
 
 .title,

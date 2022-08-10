@@ -13,7 +13,7 @@ import styles from "@styles/Home.module.css";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { useAccount } from "wagmi";
 import Link from "next/link";
-import withTransition from "@components/withTransition";
+// import withTransition from "@components/withTransition";
 
 const Home: NextPage = () => {
   const { address } = useAccount();
@@ -22,11 +22,11 @@ const Home: NextPage = () => {
     <>
       <div className={styles.container}>
         <main className={styles.main}>
-          {!address ? (
+          {false ? (
             <VStack gap={2}>
-              <h1 className={styles.title}>Interform</h1>
-              <Text fontSize="1.5rem">
-                {`Forms on the decentralized web. Powered by IPFS and Filecoin.`}
+              <h1 className={styles.title}>Welcome to Credly</h1>
+              <Text className={styles.subtitle}>
+                Community NFT-as-a-service
               </Text>
               <Spacer h="10px"></Spacer>
               <ConnectButton />
@@ -48,23 +48,21 @@ const Home: NextPage = () => {
             <HStack gap={2} className={styles.selectionContainer}>
               <VStack className={styles.containerLeft}>
                 <Text fontSize="1.5rem" w="400px">
-                  {`Already have an existing form to edit or view responses?`}
+                  Already have an existing form to edit or view responses?
                 </Text>
                 <Spacer h="10px"></Spacer>
                 <Link href={`/dashboard`}>
-                  <Button className={styles.dashboardButton}>
-                    Go to Dashboard
-                  </Button>
+                  <Button>Go to Dashboard</Button>
                 </Link>
               </VStack>
               <Box className={styles.divider}></Box>
               <VStack className={styles.containerRight}>
                 <Text fontSize="1.5rem" w="400px">
-                  {`Want to build a new form on the decentralized web?`}
+                  Want to build a new form on the decentralized web?
                 </Text>
                 <Spacer h="10px"></Spacer>
-                <Link href={`/build`}>
-                  <Button className={styles.buildButton}>Create Form</Button>
+                <Link href={`/builder`}>
+                  <Button>Create Form</Button>
                 </Link>
               </VStack>
             </HStack>
@@ -75,4 +73,4 @@ const Home: NextPage = () => {
   );
 };
 
-export default withTransition(Home);
+export default Home;

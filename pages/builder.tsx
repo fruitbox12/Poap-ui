@@ -7,14 +7,32 @@ import {
   Button,
   Select,
   Switch,
+  Image,
 } from "@chakra-ui/react";
 import styles from "@styles/Builder.module.css";
 
 const Builder = () => {
+  const loading = false;
   return (
     <HStack className={styles.container}>
-      <Editor />
-      <Artwork />
+      {loading ? (
+        <>
+          <Editor />
+          <Artwork />
+        </>
+      ) : (
+        <VStack w="100%">
+          <Image
+            src="/nft.png"
+            alt="soundscape Logo"
+            cursor="pointer"
+            className={styles.logo}
+          ></Image>
+          <Text>Community NFT has been successfully published!</Text>
+          <Text>Etherscan: ...</Text>
+          <Text>Shareable Link: ...</Text>
+        </VStack>
+      )}
     </HStack>
   );
 };
@@ -138,7 +156,9 @@ const Editor = () => {
           <Text className={styles.editorText}>Display rank on NFT</Text>
         </HStack>
       </VStack>
-      <VStack></VStack>
+      <VStack>
+        <Button>Publish</Button>
+      </VStack>
     </VStack>
   );
 };

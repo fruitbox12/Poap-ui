@@ -8,11 +8,12 @@ import {
   getDefaultWallets,
   RainbowKitProvider,
   Theme,
-  lightTheme,
+  darkTheme,
 } from "@rainbow-me/rainbowkit";
 import { publicProvider } from "wagmi/providers/public";
 import { chain, configureChains, createClient, WagmiConfig } from "wagmi";
 import merge from "lodash.merge";
+import { withTheme } from "@emotion/react";
 
 const { chains, provider } = configureChains(
   [chain.rinkeby, chain.mainnet, chain.polygon, chain.optimism, chain.arbitrum],
@@ -34,6 +35,10 @@ const wagmiClient = createClient({
 const theme = extendTheme({
   styles: {
     global: {
+      "*": {
+        backgroundColor: "transparent",
+        color: "white",
+      },
       a: {
         _hover: {
           textDecoration: "underline",
@@ -58,7 +63,7 @@ const theme = extendTheme({
 });
 
 // rainbow theme
-const customTheme = merge(lightTheme(), {
+const customTheme = merge(darkTheme(), {
   colors: {
     accentColor: "#3A76F2",
   },
