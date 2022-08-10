@@ -1,0 +1,249 @@
+.container {
+  padding: 0 1rem;
+  padding-top: 5rem;
+  height: 100vh;
+  background-color: #141d30;
+}
+
+/* EDITOR CSS */
+
+.section {
+  align-items: flex-start !important;
+  width: 100%;
+  padding: 0 1rem;
+}
+
+.editorContainer {
+  box-sizing: border-box;
+
+  width: 790px;
+  height: 900px;
+  padding: 1rem;
+
+  background: #212837;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 30px;
+
+  overflow-y: scroll;
+}
+
+.editorHeader {
+  font-family: "Montserrat";
+  font-style: normal;
+  font-weight: 700;
+  font-size: 22px;
+  line-height: 27px;
+
+  color: #ffffff;
+}
+
+.editorText {
+  font-family: "Poppins";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 27px;
+  /* identical to box height */
+
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.editorInput {
+  width: 100%;
+  padding: 0.5rem;
+
+  font-family: "poppins";
+
+  background-color: #141d30 !important;
+  border-radius: 20px;
+
+  border: none !important;
+  outline: none;
+}
+
+.templateSelectionContainer {
+  width: 100%;
+  height: 246px;
+
+  padding: 1rem;
+
+  background: #141d30;
+  border-radius: 20px;
+
+  overflow-x: scroll;
+  overflow-y: hidden;
+
+  font-family: poppins;
+}
+
+.logoNameSection {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 60px;
+
+  background: #141d30;
+  border-radius: 20px;
+}
+
+.editorSelect {
+  height: 62px;
+
+  background: #141d30 !important;
+  border-radius: 20px;
+
+  border: none !important;
+  outline: none;
+}
+
+.editorButton {
+  width: 169px;
+  height: 60px;
+
+  background: transparent !important;
+  border: 1px solid #7b7b7b;
+  border-radius: 20px;
+}
+
+.midnightDarkContainer {
+  width: 165px;
+  height: 165px;
+
+  background: #100e14;
+  border-radius: 20px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.midnightDarkInnerContainer {
+  width: 159.65px;
+  height: 159.65px;
+
+  background: #1a1820;
+  border: 1px solid #34313e;
+  border-radius: 20px;
+}
+
+.solidCreamContainer {
+  width: 165px;
+  height: 165px;
+
+  background: #f8f8f8;
+  border-radius: 20px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.solidCreamInnerContainer {
+  width: 159.65px;
+  height: 159.65px;
+  background: #ffffff;
+  border: 1px solid #acacac;
+  border-radius: 20px;
+}
+
+.pastelLavenderContainer {
+  width: 165px;
+  height: 165px;
+
+  background: #ad9dce;
+  border-radius: 20px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.pastelLavenderInnerContainer {
+  width: 159.65px;
+  height: 159.65px;
+  background: #d4c8f5;
+  border: 1px solid #34313e;
+  border-radius: 20px;
+}
+
+.addCustomContainer {
+  width: 165px;
+  height: 165px;
+
+  background: #212837;
+  border: 1px dashed #ffffff;
+  border-radius: 20px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* ======= ARTWORK CSS ======== */
+
+.artworkContainer {
+  width: 900px;
+  height: 900px;
+  background: #100e14;
+  border-radius: 50px;
+  justify-content: center;
+  align-items: center;
+}
+
+.artworkInnerContainer {
+  width: 846px;
+  height: 846px;
+  left: 27px;
+  top: 27px;
+
+  background: #1a1820;
+  border: 2px solid #34313e;
+  border-radius: 50px;
+}
+.profileContainer {
+  width: 357px;
+  height: 357px;
+  border-radius: 50%;
+  background: #d9d9d9;
+  border: 4px solid #ffffff;
+  color: white;
+}
+
+.divider {
+  width: 845px;
+  height: 0px;
+
+  border: 1px solid #393540;
+}
+
+.wallet {
+  font-family: "Montserrat";
+  font-style: normal;
+  font-weight: 700;
+  font-size: 32px;
+  line-height: 39px;
+  /* identical to box height */
+
+  color: #ffffff;
+}
+
+.header {
+  font-family: "Montserrat";
+  font-style: normal;
+  font-weight: 700;
+  font-size: 22px;
+  line-height: 27px;
+
+  color: #ffffff;
+}
+
+.title {
+  font-family: "Montserrat";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 20px;
+  line-height: 24px;
+
+  color: #ffffff;
+}
