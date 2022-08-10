@@ -4,6 +4,31 @@ import { useRouter } from "next/router";
 import { useContractWrite, usePrepareContractWrite } from "wagmi";
 
 import communityNFT from "@data/CommunityNFT.json";
+import { doc, setDoc, updateDoc, arrayUnion } from "firebase/firestore";
+import db from "@firebase/firebase";
+import { useCallback, useEffect, useState } from "react";
+
+type MintButtonProps = {
+  contractAddress: string;
+  handleMint: () => void;
+};
+
+const MintButton = ({ contractAddress, handleMint }: MintButtonProps) => {
+  const { config } = usePrepareContractWrite({
+    addressOrName: contractAddress
+      ? contractAddress
+      : "0x2E20684B8082aaeE594999324E154111d55b58bb",
+    contractInterface: communityNFT.abi,
+    functionName: "mint",
+  });
+  const { data, isLoading, isSuccess, write } = useContractWrite(config);
+
+  return (
+    <Button bgColor="#3A76F2" disabled={!write} onClick={handleMint}>
+      Mint Free NFT
+    </Button>
+  );
+};
 
 const Mint = () => {
   const router = useRouter();
@@ -12,18 +37,36 @@ const Mint = () => {
   const address = contractAddress as string;
   const loading = true;
 
-  const { config } = usePrepareContractWrite({
-    addressOrName: address
-      ? address
-      : "0xCa4E3b3f98cCA9e801f88F13d1BfE68176a03dFA",
-    contractInterface: communityNFT.abi,
-    functionName: "mint",
-  });
-  const { data, isLoading, isSuccess, write } = useContractWrite(config);
+  // const { config } = usePrepareContractWrite({
+  //   addressOrName: loadedContractAddress
+  //     ? loadedContractAddress
+  //     : "0xCa4E3b3f98cCA9e801f88F13d1BfE68176a03dFA",
+  //   contractInterface: communityNFT.abi,
+  //   functionName: "mint",
+  // });
+  // const { data, isLoading, isSuccess, write } = useContractWrite(config);
+
+  console.log("address:", address);
 
   console.log("contractAddress:", contractAddress);
 
-  if (!contractAddress) {
+  const test = useCallback(async (address: string) => {
+    const docRef = doc(db, "contracts", address);
+    await updateDoc(docRef, { users: arrayUnion({ address: "0123" }) });
+  }, []);
+
+  const handleMint = async () => {
+    // write?.();
+    test("0x1234");
+  };
+
+  // const saveToDb = useCallback(async () => {
+  //   onSnapshot(collection(db, "contracts"), (snapshot) => {
+  //     console.log("snapshot: ", snapshot.docs[0].data());
+  //   });
+  // }, []);
+
+  if (!address) {
     return;
   }
 
@@ -56,13 +99,7 @@ const Mint = () => {
               <Input className={styles.input} placeholder="@minci#4229" />
             </VStack>
 
-            <Button
-              bgColor="#3A76F2"
-              disabled={!write}
-              onClick={() => write?.()}
-            >
-              Mint Free NFT
-            </Button>
+            <MintButton contractAddress={address} handleMint={handleMint} />
           </VStack>
         ) : (
           <VStack>

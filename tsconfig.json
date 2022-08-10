@@ -15,7 +15,7 @@
     "module": "esnext",
     "moduleResolution": "node",
     "resolveJsonModule": true,
-    "isolatedModules": false,
+    "isolatedModules": true,
     "jsx": "preserve",
     "incremental": true,
     "baseUrl": ".",
@@ -31,13 +31,17 @@
       ],
       "@data/*": [
         "data/*"
+      ],
+      "@firebase/*": [
+        "firebase/*"
       ]
     }
   },
   "include": [
     "next-env.d.ts",
     "**/*.ts",
-    "**/*.tsx"
+    "**/*.tsx",
+    "utils/deploy.js"
   ],
   "exclude": [
     "node_modules"

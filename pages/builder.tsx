@@ -11,9 +11,16 @@ import {
 } from "@chakra-ui/react";
 import styles from "@styles/Builder.module.css";
 import { useCallback, useState } from "react";
+import { doc, setDoc } from "firebase/firestore";
+import db from "@firebase/firebase";
 
 const Builder = () => {
   const [publishedContract, setPublishedContract] = useState<string>("");
+
+  const saveContract = useCallback(async (address: string) => {
+    const docRef = doc(db, "contracts", address);
+    await setDoc(docRef, { address: address });
+  }, []);
 
   const publishNFT = useCallback(async () => {
     try {
@@ -28,6 +35,7 @@ const Builder = () => {
       const data = await response.json();
       console.log("data: ", data);
       setPublishedContract(data.contractAddress);
+      saveContract(data.contractAddress);
     } catch (err) {
       console.log("Error request: ", err);
     }
