@@ -1,5 +1,6 @@
 import "../styles/globals.css";
 import type { AppProps } from "next/app";
+import Navbar from "../components/Navbar";
 import { useEffect, useState } from "react";
 import { ChakraProvider, extendTheme } from "@chakra-ui/react";
 import "@rainbow-me/rainbowkit/styles.css";
@@ -59,7 +60,7 @@ const theme = extendTheme({
 // rainbow theme
 const customTheme = merge(lightTheme(), {
   colors: {
-    accentColor: "#7153FF",
+    accentColor: "#3A76F2",
   },
 } as Theme);
 
@@ -75,6 +76,7 @@ function MyApp({ Component, pageProps, router }: AppProps) {
       <WagmiConfig client={wagmiClient}>
         <RainbowKitProvider chains={chains} theme={customTheme}>
           <ChakraProvider theme={theme}>
+            <Navbar></Navbar>
             <Component {...pageProps} key={router.route} />
           </ChakraProvider>
         </RainbowKitProvider>
