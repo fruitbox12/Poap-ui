@@ -10,14 +10,35 @@ import {
   Image,
 } from "@chakra-ui/react";
 import styles from "@styles/Builder.module.css";
+import { useCallback, useState } from "react";
 
 const Builder = () => {
-  const loading = false;
+  const [publishedContract, setPublishedContract] = useState<string>("");
+
+  const publishNFT = useCallback(async () => {
+    try {
+      const response = await fetch("http://localhost:3001/deploy", {
+        method: "POST",
+        body: JSON.stringify({ tokenSupply: 100 }),
+        headers: {
+          "content-type": "application/json",
+          "Access-Control-Allow-Origin": "*",
+        },
+      });
+      const data = await response.json();
+      console.log("data: ", data);
+      setPublishedContract(data.contractAddress);
+    } catch (err) {
+      console.log("Error request: ", err);
+    }
+  }, []);
+
+  const loading = true;
   return (
     <HStack className={styles.container}>
-      {loading ? (
+      {!publishedContract ? (
         <>
-          <Editor />
+          <Editor publishNFT={publishNFT} />
           <Artwork />
         </>
       ) : (
@@ -29,15 +50,19 @@ const Builder = () => {
             className={styles.logo}
           ></Image>
           <Text>Community NFT has been successfully published!</Text>
-          <Text>Etherscan: ...</Text>
-          <Text>Shareable Link: ...</Text>
+          <Text>{`Etherscan: https://rinkeby.etherscan.io/address/${publishedContract}`}</Text>
+          <Text>{`Shareable Link: http://localhost:3000/mint/${publishedContract}`}</Text>
         </VStack>
       )}
     </HStack>
   );
 };
 
-const Editor = () => {
+type EditorProps = {
+  publishNFT: () => void;
+};
+
+const Editor = ({ publishNFT }: EditorProps) => {
   return (
     <VStack className={styles.editorContainer} gap={3}>
       <VStack className={styles.section}>
@@ -157,7 +182,7 @@ const Editor = () => {
         </HStack>
       </VStack>
       <VStack>
-        <Button>Publish</Button>
+        <Button onClick={publishNFT}>Publish</Button>
       </VStack>
     </VStack>
   );
