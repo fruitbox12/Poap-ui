@@ -1,0 +1,50 @@
+.container {
+  padding: 0 1rem;
+  padding-top: 6rem;
+  height: 100vh;
+  background-color: #141d30;
+  width: 100%;
+}
+
+.nftContainer {
+  width: 1677px;
+  height: 138px;
+
+  background: #212837;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 30px;
+
+  justify-content: space-between;
+  padding: 0 2rem;
+}
+
+.title {
+  font-family: "Poppins";
+  font-style: normal;
+  font-weight: 600;
+  font-size: 20px;
+  line-height: 30px;
+  /* identical to box height */
+
+  color: #ffffff;
+}
+
+.subtitle {
+  font-family: "Poppins";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 20px;
+  line-height: 30px;
+  /* identical to box height */
+
+  color: #ffffff;
+}
+
+.button {
+  width: 187px;
+  height: 60px;
+
+  background: #212837 !important;
+  border: 1px solid #757575;
+  border-radius: 20px;
+}

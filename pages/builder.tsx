@@ -48,7 +48,7 @@ const Editor = () => {
         />
       </VStack>
       <VStack className={styles.section}>
-        <Text className={styles.editorHeader}>Template</Text>
+        <Text className={styles.editorHeader}>Theme</Text>
         <HStack className={styles.templateSelectionContainer} gap={1}>
           <VStack>
             <Box className={styles.midnightDarkContainer}>
