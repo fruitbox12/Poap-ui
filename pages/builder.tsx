@@ -8,6 +8,7 @@ import {
   Select,
   Switch,
   Image,
+  Spacer,
 } from "@chakra-ui/react";
 import styles from "@styles/Builder.module.css";
 import { useCallback, useState } from "react";
@@ -110,6 +111,7 @@ const Builder = () => {
             handleFileUpload={handleFileUpload}
             uploadedLogoFile={uploadedLogoFile}
           />
+          <Spacer></Spacer>
           <Artwork
             selectedTheme={selectedTheme}
             uploadedLogoFile={uploadedLogoFile}
@@ -319,35 +321,67 @@ const Artwork = ({
         {uploadedLogoURL && (
           <Image
             src={uploadedLogoURL}
-            alt="soundscape Logo"
+            alt="community logo"
             cursor="pointer"
             className={styles.communityLogo}
           ></Image>
         )}
-        <Box className={styles.profileContainer}></Box>
-        <HStack>
-          <VStack>
-            <Text className={styles.wallet}>0x17...df</Text>
-            <Text className={styles.title}>Gold Tier</Text>
-          </VStack>
-          <VStack>
-            <Text className={styles.header}>Rank 1/1</Text>
-            <Text className={styles.title}>Total Score</Text>
-          </VStack>
-        </HStack>
+        <VStack className={styles.artworkUpperSection}>
+          <Box className={styles.pfpContainer}>
+            <Image
+              src="pfp.png"
+              alt="community logo"
+              cursor="pointer"
+              className={styles.pfp}
+            ></Image>
+          </Box>
+          <HStack className={styles.headerStatsContainer}>
+            <VStack className={styles.headerStatsLeftSection}>
+              <Text className={styles.walletHeader}>0x17...df</Text>
+              <Text className={styles.tierHeader}>Platinum Tier</Text>
+            </VStack>
+            <VStack className={styles.headerStatsRightSection}>
+              <HStack className={styles.rankLabelContainer}>
+                <Text className={styles.rankLabel}>Rank #1</Text>
+                <Text className={styles.rankTotalLabel}>/ 1</Text>
+              </HStack>
+              <HStack className={styles.headerScoreContainer}>
+                <Box className={styles.scoreBarContainer}>
+                  <Box className={`${styles.scoreBar} ${styles.total}`}></Box>
+                </Box>
+                <Text className={styles.scoreLabel}>8.6</Text>
+              </HStack>
+            </VStack>
+          </HStack>
+        </VStack>
         <hr className={styles.divider}></hr>
-        <HStack>
-          <VStack>
+        <HStack className={styles.individualStatsContainer}>
+          <VStack className={styles.individualStatsLeftSection}>
             <Text className={styles.header}>Metrics</Text>
-            <Text className={styles.title}>Protocol XP</Text>
-            <Text className={styles.title}>Developer XP</Text>
-            <Text className={styles.title}>Community XP</Text>
+            <Text className={styles.scoreTitle}>Protocol XP</Text>
+            <Text className={styles.scoreTitle}>Developer XP</Text>
+            <Text className={styles.scoreTitle}>Community XP</Text>
           </VStack>
-          <VStack>
+          <VStack className={styles.individualStatsRightSection}>
             <Text className={styles.header}>Current Score</Text>
-            <Text className={styles.title}>Score 1</Text>
-            <Text className={styles.title}>Score 2</Text>
-            <Text className={styles.title}>Score 3</Text>
+            <HStack className={styles.scoreContainer}>
+              <Box className={styles.scoreBarContainer}>
+                <Box className={`${styles.scoreBar} ${styles.protocol}`}></Box>
+              </Box>
+              <Text className={styles.scoreLabel}>8.6</Text>
+            </HStack>
+            <HStack className={styles.scoreContainer}>
+              <Box className={styles.scoreBarContainer}>
+                <Box className={`${styles.scoreBar} ${styles.developer}`}></Box>
+              </Box>
+              <Text className={styles.scoreLabel}>8.6</Text>
+            </HStack>
+            <HStack className={styles.scoreContainer}>
+              <Box className={styles.scoreBarContainer}>
+                <Box className={`${styles.scoreBar} ${styles.community}`}></Box>
+              </Box>
+              <Text className={styles.scoreLabel}>8.6</Text>
+            </HStack>
           </VStack>
         </HStack>
       </VStack>
