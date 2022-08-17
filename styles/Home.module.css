@@ -141,3 +141,21 @@
     filter: invert(1);
   }
 }
+
+.dashboardButton {
+  width: 321px;
+  height: 74px;
+
+  background: #999999 !important;
+  border-radius: 20px;
+  color: white;
+}
+
+.buildButton {
+  width: 321px;
+  height: 74px;
+
+  background: #0070f3 !important;
+  border-radius: 20px;
+  color: white;
+}

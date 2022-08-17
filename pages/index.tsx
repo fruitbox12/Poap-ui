@@ -22,7 +22,7 @@ const Home: NextPage = () => {
     <>
       <div className={styles.container}>
         <main className={styles.main}>
-          {false ? (
+          {!address ? (
             <VStack gap={2}>
               <h1 className={styles.title}>Welcome to Credly</h1>
               <Text className={styles.subtitle}>
@@ -52,7 +52,9 @@ const Home: NextPage = () => {
                 </Text>
                 <Spacer h="10px"></Spacer>
                 <Link href={`/dashboard`}>
-                  <Button>Go to Dashboard</Button>
+                  <Button className={styles.dashboardButton}>
+                    Go to Dashboard
+                  </Button>
                 </Link>
               </VStack>
               <Box className={styles.divider}></Box>
@@ -62,7 +64,7 @@ const Home: NextPage = () => {
                 </Text>
                 <Spacer h="10px"></Spacer>
                 <Link href={`/builder`}>
-                  <Button>Create Form</Button>
+                  <Button className={styles.buildButton}>Create NFT</Button>
                 </Link>
               </VStack>
             </HStack>

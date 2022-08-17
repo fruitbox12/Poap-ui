@@ -16,9 +16,6 @@ const Navbar = () => {
         ></Image>
       </Link>
       <HStack>
-        <Text className={styles.searchbarText}>Credly</Text>
-      </HStack>
-      <HStack>
         <ConnectButton />
       </HStack>
     </HStack>

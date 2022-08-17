@@ -14,12 +14,47 @@ import { useCallback, useState } from "react";
 import { doc, setDoc } from "firebase/firestore";
 import db from "@firebase/firebase";
 
+const themes = [
+  {
+    name: "Midnight Dark",
+    foregroundColor: "#1a1820",
+    backgroundColor: "#100e14",
+    foregroundClassname: "midnightDarkFg",
+    foregroundClassname2: "midnightDarkArtworkFg",
+    backgroundClassname: "midnightDarkBg",
+  },
+  {
+    name: "Solid Cream",
+    foregroundColor: "#ffffff",
+    backgroundColor: "#f8f8f8",
+    foregroundClassname: "solidCreamFg",
+    foregroundClassname2: "solidCreamArtworkFg",
+    backgroundClassname: "solidCreamBg",
+  },
+  {
+    name: "Pastel Lavender",
+    foregroundColor: "#d4c8f5",
+    backgroundColor: "#ad9dce",
+    foregroundClassname: "pastelLavenderFg",
+    foregroundClassname2: "pastelLavenderArtworkFg",
+    backgroundClassname: "pastelLavenderBg",
+  },
+];
+
 const Builder = () => {
   const [publishedContract, setPublishedContract] = useState<string>("");
+  const [selectedTheme, setSelectedTheme] = useState<string>("Midnight Dark");
+  const [uploadedLogoFile, setUploadedLogoFile] = useState<any>("");
+  const [uploadedLogoURL, setUploadedLogoURL] = useState<string>("");
 
   const saveContract = useCallback(async (address: string) => {
-    const docRef = doc(db, "contracts", address);
-    await setDoc(docRef, { address: address });
+    const docRef = doc(db, "contracts", address.toLowerCase());
+    await setDoc(docRef, {
+      address: address.toLowerCase(),
+      users: [],
+      protocolAddress: "0x48adbf604c7ff9e2b2e8c01b243ba446538972ea", // TODO: dynamic
+      githubRepoURL: "https://github.com/iamminci/verbsdao",
+    });
   }, []);
 
   const publishNFT = useCallback(async () => {
@@ -41,13 +76,45 @@ const Builder = () => {
     }
   }, []);
 
+  const handleFileChange = (event: any) => {
+    console.log("event: ", event.target.files[0]);
+
+    const file = event.target.files[0];
+
+    const url = URL.createObjectURL(file);
+    setUploadedLogoURL(url);
+    setUploadedLogoFile(event.target.files[0]);
+  };
+
+  const handleFileUpload = () => {
+    const formData = new FormData();
+    formData.append("myFile", uploadedLogoFile, uploadedLogoFile.name);
+
+    console.log(uploadedLogoFile);
+
+    // Request made to the backend api
+    // Send formData object
+    // axios.post("api/uploadfile", formData);
+  };
+
   const loading = true;
   return (
     <HStack className={styles.container}>
       {!publishedContract ? (
         <>
-          <Editor publishNFT={publishNFT} />
-          <Artwork />
+          <Editor
+            publishNFT={publishNFT}
+            setSelectedTheme={setSelectedTheme}
+            selectedTheme={selectedTheme}
+            handleFileChange={handleFileChange}
+            handleFileUpload={handleFileUpload}
+            uploadedLogoFile={uploadedLogoFile}
+          />
+          <Artwork
+            selectedTheme={selectedTheme}
+            uploadedLogoFile={uploadedLogoFile}
+            uploadedLogoURL={uploadedLogoURL}
+          />
         </>
       ) : (
         <VStack w="100%">
@@ -58,8 +125,20 @@ const Builder = () => {
             className={styles.logo}
           ></Image>
           <Text>Community NFT has been successfully published!</Text>
-          <Text>{`Etherscan: https://rinkeby.etherscan.io/address/${publishedContract}`}</Text>
-          <Text>{`Shareable Link: http://localhost:3000/mint/${publishedContract}`}</Text>
+          <a
+            href={`https://rinkeby.etherscan.io/address/${publishedContract}`}
+            rel="noreferrer"
+            target="_blank"
+          >
+            <Text>{`Etherscan: https://rinkeby.etherscan.io/address/${publishedContract}`}</Text>
+          </a>
+          <a
+            href={`http://localhost:3000/mint/${publishedContract}`}
+            rel="noreferrer"
+            target="_blank"
+          >
+            <Text>{`Shareable Link: http://localhost:3000/mint/${publishedContract}`}</Text>
+          </a>
         </VStack>
       )}
     </HStack>
@@ -68,39 +147,47 @@ const Builder = () => {
 
 type EditorProps = {
   publishNFT: () => void;
+  selectedTheme: string;
+  setSelectedTheme: (theme: string) => void;
+  handleFileChange: (event: any) => void;
+  handleFileUpload: () => void;
+  uploadedLogoFile: any;
 };
 
-const Editor = ({ publishNFT }: EditorProps) => {
+const Editor = ({
+  publishNFT,
+  selectedTheme,
+  setSelectedTheme,
+  handleFileChange,
+  handleFileUpload,
+  uploadedLogoFile,
+}: EditorProps) => {
   return (
     <VStack className={styles.editorContainer} gap={3}>
       <VStack className={styles.section}>
-        <Text className={styles.editorHeader}>Name</Text>
+        <Text className={styles.editorHeader}>Community Name</Text>
         <Input
           className={styles.editorInput}
-          placeholder="Enter Name for Community NFT"
+          placeholder="Enter the name of your community"
         />
       </VStack>
       <VStack className={styles.section}>
         <Text className={styles.editorHeader}>Theme</Text>
         <HStack className={styles.templateSelectionContainer} gap={1}>
-          <VStack>
-            <Box className={styles.midnightDarkContainer}>
-              <Box className={styles.midnightDarkInnerContainer}></Box>
-            </Box>
-            <Text>Midnight Dark</Text>
-          </VStack>
-          <VStack>
-            <Box className={styles.solidCreamContainer}>
-              <Box className={styles.solidCreamInnerContainer}></Box>
-            </Box>
-            <Text>Solid Cream</Text>
-          </VStack>
-          <VStack>
-            <Box className={styles.pastelLavenderContainer}>
-              <Box className={styles.pastelLavenderInnerContainer}></Box>
-            </Box>
-            <Text>Pastel Lavender</Text>
-          </VStack>
+          {themes.map(({ name, foregroundClassname, backgroundClassname }) => (
+            <VStack key={name} onClick={() => setSelectedTheme(name)}>
+              <Box
+                className={`${styles.themeContainer} ${
+                  styles[backgroundClassname]
+                } ${selectedTheme === name ? styles.selected : ""}`}
+              >
+                <Box
+                  className={`${styles.themeInnerContainer} ${styles[foregroundClassname]}`}
+                ></Box>
+              </Box>
+              <Text>{name}</Text>
+            </VStack>
+          ))}
           <VStack>
             <Box className={styles.addCustomContainer}>
               <Text fontSize="6xl">+</Text>
@@ -113,9 +200,19 @@ const Editor = ({ publishNFT }: EditorProps) => {
         <Text className={styles.editorHeader}>Logo</Text>
         <HStack w="100%">
           <Box className={styles.logoNameSection}>
-            <Text>placeholder</Text>
+            <Text>
+              {!uploadedLogoFile
+                ? "Please upload an image with square dimensions."
+                : uploadedLogoFile.name}
+            </Text>
           </Box>
-          <Button className={styles.editorButton}>Upload</Button>
+          <input
+            type="file"
+            id="logoInput"
+            accept="image/png, image/jpg"
+            onChange={handleFileChange}
+            className={styles.logoInput}
+          />
         </HStack>
       </VStack>
       <VStack className={styles.section}>
@@ -125,9 +222,8 @@ const Editor = ({ publishNFT }: EditorProps) => {
           placeholder="Enter Contract Address"
         />
         <Select placeholder="Select option" className={styles.editorSelect}>
-          <option value="option1">Option 1</option>
-          <option value="option2">Option 2</option>
-          <option value="option3">Option 3</option>
+          <option value="option1">voteProposal</option>
+          <option value="option2">createProposal</option>
         </Select>
       </VStack>
       <VStack className={styles.section}>
@@ -137,32 +233,31 @@ const Editor = ({ publishNFT }: EditorProps) => {
           placeholder="Enter Github Repo URL (e.g. https://github.com/iamminci...)"
         />
         <Select placeholder="Select option" className={styles.editorSelect}>
-          <option value="option1">Option 1</option>
-          <option value="option2">Option 2</option>
-          <option value="option3">Option 3</option>
+          <option value="option1">Number of Commits</option>
+          <option value="option2">Number of Pull Requests</option>
+          <option value="option3">Number of PR comments</option>
         </Select>
       </VStack>
       <VStack className={styles.section}>
         <Text className={styles.editorHeader}>Community XP</Text>
         <HStack w="100%">
           <Select placeholder="Select option" className={styles.editorSelect}>
-            <option value="option1">Option 1</option>
-            <option value="option2">Option 2</option>
-            <option value="option3">Option 3</option>
+            <option value="option1">Discord</option>
+            <option value="option2">Twitter</option>
+            <option value="option3">Telegram</option>
           </Select>
           <Button className={styles.editorButton}>Link</Button>
         </HStack>
         <Select placeholder="Select option" className={styles.editorSelect}>
-          <option value="option1">Option 1</option>
-          <option value="option2">Option 2</option>
-          <option value="option3">Option 3</option>
+          <option value="option1">Minutes on Community Voice Chat</option>
+          <option value="option2">Number of Messages in Channel</option>
         </Select>
         <HStack w="100%">
           <Input className={styles.editorInput} placeholder="Enter Message" />
           <Select placeholder="Select option" className={styles.editorSelect}>
-            <option value="option1">Option 1</option>
-            <option value="option2">Option 2</option>
-            <option value="option3">Option 3</option>
+            <option value="option1">#general</option>
+            <option value="option2">#developers</option>
+            <option value="option3">#gm</option>
           </Select>
         </HStack>
       </VStack>
@@ -173,9 +268,10 @@ const Editor = ({ publishNFT }: EditorProps) => {
       <VStack className={styles.section}>
         <Text className={styles.editorHeader}>Metadata Update Interval</Text>
         <Select placeholder="Select option" className={styles.editorSelect}>
-          <option value="option1">Option 1</option>
-          <option value="option2">Option 2</option>
-          <option value="option3">Option 3</option>
+          <option value="option1">Every Minute</option>
+          <option value="option1">Every Day</option>
+          <option value="option1">Every Week</option>
+          <option value="option1">Every Month</option>
         </Select>
       </VStack>
       <VStack className={styles.section}>
@@ -196,10 +292,38 @@ const Editor = ({ publishNFT }: EditorProps) => {
   );
 };
 
-const Artwork = () => {
+type ArtworkProps = {
+  selectedTheme: string;
+  uploadedLogoFile: any;
+  uploadedLogoURL: string;
+};
+
+const Artwork = ({
+  selectedTheme,
+  uploadedLogoFile,
+  uploadedLogoURL,
+}: ArtworkProps) => {
+  const selected = themes.find((theme) => theme.name === selectedTheme)!;
+
   return (
-    <VStack className={styles.artworkContainer}>
-      <VStack className={styles.artworkInnerContainer}>
+    <VStack
+      className={`${styles.artworkContainer} ${
+        styles[selected.backgroundClassname]
+      }`}
+    >
+      <VStack
+        className={`${styles.artworkInnerContainer} ${
+          styles[selected.foregroundClassname2]
+        }`}
+      >
+        {uploadedLogoURL && (
+          <Image
+            src={uploadedLogoURL}
+            alt="soundscape Logo"
+            cursor="pointer"
+            className={styles.communityLogo}
+          ></Image>
+        )}
         <Box className={styles.profileContainer}></Box>
         <HStack>
           <VStack>

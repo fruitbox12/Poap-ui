@@ -18,7 +18,7 @@
 
   width: 790px;
   height: 900px;
-  padding: 1rem;
+  padding: 2rem 1rem;
 
   background: #212837;
   border: 1px solid rgba(255, 255, 255, 0.2);
@@ -106,65 +106,52 @@
   border-radius: 20px;
 }
 
-.midnightDarkContainer {
+/* =================== THEMES ===================  */
+
+.themeContainer {
   width: 165px;
   height: 165px;
-
-  background: #100e14;
   border-radius: 20px;
-
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
-.midnightDarkInnerContainer {
-  width: 159.65px;
-  height: 159.65px;
+.themeInnerContainer {
+  width: 155px;
+  height: 155px;
+  border-radius: 20px;
+}
 
+.midnightDarkBg {
+  background: #100e14;
+}
+
+.midnightDarkFg {
   background: #1a1820;
   border: 1px solid #34313e;
-  border-radius: 20px;
 }
 
-.solidCreamContainer {
-  width: 165px;
-  height: 165px;
-
+.solidCreamBg {
   background: #f8f8f8;
-  border-radius: 20px;
-
-  display: flex;
-  justify-content: center;
-  align-items: center;
 }
 
-.solidCreamInnerContainer {
-  width: 159.65px;
-  height: 159.65px;
+.solidCreamFg {
   background: #ffffff;
   border: 1px solid #acacac;
-  border-radius: 20px;
 }
 
-.pastelLavenderContainer {
-  width: 165px;
-  height: 165px;
-
+.pastelLavenderBg {
   background: #ad9dce;
-  border-radius: 20px;
-
-  display: flex;
-  justify-content: center;
-  align-items: center;
 }
 
-.pastelLavenderInnerContainer {
-  width: 159.65px;
-  height: 159.65px;
+.pastelLavenderFg {
   background: #d4c8f5;
   border: 1px solid #34313e;
-  border-radius: 20px;
+}
+
+.selected {
+  border: 3px solid #3a76f2;
 }
 
 .addCustomContainer {
@@ -180,12 +167,27 @@
   align-items: center;
 }
 
+.logoInput {
+  width: 150px;
+  color: transparent !important;
+}
+
+.logoInput::file-selector-button {
+  width: 120px;
+  height: 40px;
+  color: white;
+  font-family: "Inter";
+
+  background: transparent !important;
+  border: 1px solid #e6e6e6;
+  border-radius: 7px;
+}
+
 /* ======= ARTWORK CSS ======== */
 
 .artworkContainer {
   width: 900px;
   height: 900px;
-  background: #100e14;
   border-radius: 50px;
   justify-content: center;
   align-items: center;
@@ -194,13 +196,26 @@
 .artworkInnerContainer {
   width: 846px;
   height: 846px;
-  left: 27px;
-  top: 27px;
 
-  background: #1a1820;
-  border: 2px solid #34313e;
+  position: relative;
   border-radius: 50px;
 }
+
+.midnightDarkArtworkFg {
+  background: #1a1820;
+  border: 2px solid #34313e;
+}
+
+.solidCreamArtworkFg {
+  background: #ffffff;
+  border: 2px solid #acacac;
+}
+
+.pastelLavenderArtworkFg {
+  background: #d4c8f5;
+  border: 2px solid #34313e;
+}
+
 .profileContainer {
   width: 357px;
   height: 357px;
@@ -246,4 +261,12 @@
   line-height: 24px;
 
   color: #ffffff;
+}
+
+.communityLogo {
+  position: absolute;
+  width: 117px;
+  height: 117px;
+  left: 26px;
+  top: 24px;
 }
