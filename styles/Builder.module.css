@@ -3,6 +3,7 @@
   padding-top: 5rem;
   height: 100vh;
   background-color: #141d30;
+  color: white;
 }
 
 /* EDITOR CSS */
@@ -133,7 +134,7 @@
 }
 
 .solidCreamBg {
-  background: #f8f8f8;
+  background: #ececec;
 }
 
 .solidCreamFg {
@@ -200,21 +201,25 @@
   position: relative;
   border-radius: 50px;
   padding: 3rem 4rem;
+  color: white;
 }
 
 .midnightDarkArtworkFg {
   background: #1a1820;
   border: 2px solid #34313e;
+  color: white;
 }
 
 .solidCreamArtworkFg {
   background: #ffffff;
-  border: 2px solid #acacac;
+  border: 2px solid #e3e3e3;
+  color: #939393;
 }
 
 .pastelLavenderArtworkFg {
   background: #d4c8f5;
   border: 2px solid #34313e;
+  color: black;
 }
 
 .artworkUpperSection {
@@ -222,11 +227,28 @@
   height: 500px;
 }
 
+.pfp {
+  width: 100%;
+  height: 100%;
+  border-radius: 50px;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.badge {
+  position: absolute;
+  width: 130px;
+  right: -1.5rem;
+  bottom: -1rem;
+}
+
 .pfpContainer {
+  position: relative;
   width: 357px;
   height: 357px;
   border-radius: 50%;
-  border: 1px solid #ffffff;
+  border: 6px solid #ffffff;
 }
 
 .divider {
@@ -236,13 +258,20 @@
   border: 1px solid #393540;
 }
 
+.midnightDivider {
+  border: 1px solid #393540;
+}
+
+.creamDivider {
+  border: 1px solid #e0e0e0;
+}
+
 .walletHeader {
   font-family: "Montserrat";
   font-style: normal;
   font-weight: 700;
   font-size: 48px;
   line-height: 48px;
-  color: #ffffff;
 }
 
 .tierHeader {
@@ -251,7 +280,6 @@
   font-weight: 400;
   font-size: 30px;
   line-height: 28px;
-  color: #ffffff;
 }
 
 .rankLabelContainer {
@@ -267,7 +295,6 @@
   font-weight: 700;
   font-size: 36px;
   line-height: 36px;
-  color: #ffffff;
 }
 
 .rankTotalLabel {
@@ -276,7 +303,6 @@
   font-weight: 400;
   font-size: 20px;
   line-height: 26px;
-  color: #ffffff;
 }
 
 .communityLogo {
@@ -320,7 +346,6 @@
   font-weight: 400;
   font-size: 26px;
   line-height: 36px;
-  color: #ffffff;
   padding-left: 8px;
 }
 
@@ -330,7 +355,6 @@
   font-weight: 400;
   font-size: 26px;
   line-height: 36px;
-  color: #ffffff;
 }
 
 .scoreBarContainer {
@@ -342,6 +366,14 @@
   border-radius: 10px;
 }
 
+.midnightScoreBar {
+  background: rgba(217, 217, 217, 0.59);
+}
+
+.creamScoreBar {
+  background: #e3e3e3;
+}
+
 .scoreBar {
   position: absolute;
   width: 75%;
@@ -350,20 +382,36 @@
   border-radius: 10px;
 }
 
-.total {
+.midnightTotal {
   background: #56ffeb;
 }
 
-.protocol {
+.midnightProtocol {
   background: #fffe56;
 }
 
-.developer {
+.midnightDeveloper {
   background: #f09439;
 }
 
-.community {
+.midnightCommunity {
   background: #9056e0;
+}
+
+.creamTotal {
+  background: #cbfff9;
+}
+
+.creamProtocol {
+  background: #ffe600;
+}
+
+.creamDeveloper {
+  background: #fec790;
+}
+
+.creamCommunity {
+  background: #c69dff;
 }
 
 .individualStatsContainer {
@@ -396,5 +444,4 @@
   font-style: normal;
   font-weight: 700;
   font-size: 36px;
-  color: #ffffff;
 }

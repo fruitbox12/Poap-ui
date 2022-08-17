@@ -17,6 +17,7 @@ import db from "@firebase/firebase";
 
 const themes = [
   {
+    id: "midnight",
     name: "Midnight Dark",
     foregroundColor: "#1a1820",
     backgroundColor: "#100e14",
@@ -25,6 +26,7 @@ const themes = [
     backgroundClassname: "midnightDarkBg",
   },
   {
+    id: "cream",
     name: "Solid Cream",
     foregroundColor: "#ffffff",
     backgroundColor: "#f8f8f8",
@@ -33,6 +35,7 @@ const themes = [
     backgroundClassname: "solidCreamBg",
   },
   {
+    id: "pastel",
     name: "Pastel Lavender",
     foregroundColor: "#d4c8f5",
     backgroundColor: "#ad9dce",
@@ -44,9 +47,11 @@ const themes = [
 
 const Builder = () => {
   const [publishedContract, setPublishedContract] = useState<string>("");
-  const [selectedTheme, setSelectedTheme] = useState<string>("Midnight Dark");
+  const [selectedTheme, setSelectedTheme] = useState<string>("midnight");
   const [uploadedLogoFile, setUploadedLogoFile] = useState<any>("");
   const [uploadedLogoURL, setUploadedLogoURL] = useState<string>("");
+  const [showRank, setShowRank] = useState<boolean>(true);
+  const [showTier, setShowTier] = useState<boolean>(true);
 
   const saveContract = useCallback(async (address: string) => {
     const docRef = doc(db, "contracts", address.toLowerCase());
@@ -98,6 +103,16 @@ const Builder = () => {
     // axios.post("api/uploadfile", formData);
   };
 
+  const toggleRank = (event: any) => {
+    console.log("event: ", event.target.checked);
+    setShowRank(event.target.checked);
+  };
+
+  const toggleTier = (event: any) => {
+    console.log("event: ", event.target.checked);
+    setShowTier(event.target.checked);
+  };
+
   const loading = true;
   return (
     <HStack className={styles.container}>
@@ -110,12 +125,16 @@ const Builder = () => {
             handleFileChange={handleFileChange}
             handleFileUpload={handleFileUpload}
             uploadedLogoFile={uploadedLogoFile}
+            toggleRank={toggleRank}
+            toggleTier={toggleTier}
           />
           <Spacer></Spacer>
           <Artwork
             selectedTheme={selectedTheme}
             uploadedLogoFile={uploadedLogoFile}
             uploadedLogoURL={uploadedLogoURL}
+            showRank={showRank}
+            showTier={showTier}
           />
         </>
       ) : (
@@ -154,6 +173,8 @@ type EditorProps = {
   handleFileChange: (event: any) => void;
   handleFileUpload: () => void;
   uploadedLogoFile: any;
+  toggleRank: (event: any) => void;
+  toggleTier: (event: any) => void;
 };
 
 const Editor = ({
@@ -163,6 +184,8 @@ const Editor = ({
   handleFileChange,
   handleFileUpload,
   uploadedLogoFile,
+  toggleRank,
+  toggleTier,
 }: EditorProps) => {
   return (
     <VStack className={styles.editorContainer} gap={3}>
@@ -176,20 +199,22 @@ const Editor = ({
       <VStack className={styles.section}>
         <Text className={styles.editorHeader}>Theme</Text>
         <HStack className={styles.templateSelectionContainer} gap={1}>
-          {themes.map(({ name, foregroundClassname, backgroundClassname }) => (
-            <VStack key={name} onClick={() => setSelectedTheme(name)}>
-              <Box
-                className={`${styles.themeContainer} ${
-                  styles[backgroundClassname]
-                } ${selectedTheme === name ? styles.selected : ""}`}
-              >
+          {themes.map(
+            ({ id, name, foregroundClassname, backgroundClassname }) => (
+              <VStack key={name} onClick={() => setSelectedTheme(id)}>
                 <Box
-                  className={`${styles.themeInnerContainer} ${styles[foregroundClassname]}`}
-                ></Box>
-              </Box>
-              <Text>{name}</Text>
-            </VStack>
-          ))}
+                  className={`${styles.themeContainer} ${
+                    styles[backgroundClassname]
+                  } ${selectedTheme === id ? styles.selected : ""}`}
+                >
+                  <Box
+                    className={`${styles.themeInnerContainer} ${styles[foregroundClassname]}`}
+                  ></Box>
+                </Box>
+                <Text>{name}</Text>
+              </VStack>
+            )
+          )}
           <VStack>
             <Box className={styles.addCustomContainer}>
               <Text fontSize="6xl">+</Text>
@@ -279,12 +304,12 @@ const Editor = ({
       <VStack className={styles.section}>
         <Text className={styles.editorHeader}>Rank &#x26; Tier</Text>
         <HStack>
-          <Switch colorScheme="blue" />
+          <Switch defaultChecked colorScheme="blue" onChange={toggleRank} />
           <Text className={styles.editorText}>Display rank on NFT</Text>
         </HStack>
         <HStack>
-          <Switch colorScheme="blue" />
-          <Text className={styles.editorText}>Display rank on NFT</Text>
+          <Switch defaultChecked colorScheme="blue" onChange={toggleTier} />
+          <Text className={styles.editorText}>Display tier on NFT</Text>
         </HStack>
       </VStack>
       <VStack>
@@ -298,14 +323,18 @@ type ArtworkProps = {
   selectedTheme: string;
   uploadedLogoFile: any;
   uploadedLogoURL: string;
+  showRank: boolean;
+  showTier: boolean;
 };
 
 const Artwork = ({
   selectedTheme,
   uploadedLogoFile,
   uploadedLogoURL,
+  showRank,
+  showTier,
 }: ArtworkProps) => {
-  const selected = themes.find((theme) => theme.name === selectedTheme)!;
+  const selected = themes.find((theme) => theme.id === selectedTheme)!;
 
   return (
     <VStack
@@ -329,32 +358,58 @@ const Artwork = ({
         <VStack className={styles.artworkUpperSection}>
           <Box className={styles.pfpContainer}>
             <Image
-              src="pfp.png"
+              src="pfp2.png"
               alt="community logo"
               cursor="pointer"
               className={styles.pfp}
             ></Image>
+            {showTier && (
+              <Image
+                src="platinum.png"
+                alt="community logo"
+                cursor="pointer"
+                className={styles.badge}
+              ></Image>
+            )}
           </Box>
           <HStack className={styles.headerStatsContainer}>
             <VStack className={styles.headerStatsLeftSection}>
               <Text className={styles.walletHeader}>0x17...df</Text>
-              <Text className={styles.tierHeader}>Platinum Tier</Text>
+              {showTier ? (
+                <Text className={styles.tierHeader}>Platinum Tier</Text>
+              ) : (
+                <Text className={styles.tierHeader}>Member</Text>
+              )}
             </VStack>
             <VStack className={styles.headerStatsRightSection}>
-              <HStack className={styles.rankLabelContainer}>
-                <Text className={styles.rankLabel}>Rank #1</Text>
-                <Text className={styles.rankTotalLabel}>/ 1</Text>
-              </HStack>
+              {!showRank ? (
+                <Text className={styles.rankLabel}>Total Score</Text>
+              ) : (
+                <HStack className={styles.rankLabelContainer}>
+                  <Text className={styles.rankLabel}>Rank #1</Text>
+                  <Text className={styles.rankTotalLabel}>/ 1</Text>
+                </HStack>
+              )}
               <HStack className={styles.headerScoreContainer}>
-                <Box className={styles.scoreBarContainer}>
-                  <Box className={`${styles.scoreBar} ${styles.total}`}></Box>
+                <Box
+                  className={`${styles.scoreBarContainer} ${
+                    styles[`${selected.id}ScoreBar`]
+                  }`}
+                >
+                  <Box
+                    className={`${styles.scoreBar} ${
+                      styles[`${selected.id}Total`]
+                    }`}
+                  ></Box>
                 </Box>
                 <Text className={styles.scoreLabel}>8.6</Text>
               </HStack>
             </VStack>
           </HStack>
         </VStack>
-        <hr className={styles.divider}></hr>
+        <hr
+          className={`${styles.divider} ${styles[`${selected.id}Divider`]}`}
+        ></hr>
         <HStack className={styles.individualStatsContainer}>
           <VStack className={styles.individualStatsLeftSection}>
             <Text className={styles.header}>Metrics</Text>
@@ -365,20 +420,44 @@ const Artwork = ({
           <VStack className={styles.individualStatsRightSection}>
             <Text className={styles.header}>Current Score</Text>
             <HStack className={styles.scoreContainer}>
-              <Box className={styles.scoreBarContainer}>
-                <Box className={`${styles.scoreBar} ${styles.protocol}`}></Box>
+              <Box
+                className={`${styles.scoreBarContainer} ${
+                  styles[`${selected.id}ScoreBar`]
+                }`}
+              >
+                <Box
+                  className={`${styles.scoreBar} ${
+                    styles[`${selected.id}Protocol`]
+                  }`}
+                ></Box>
               </Box>
               <Text className={styles.scoreLabel}>8.6</Text>
             </HStack>
             <HStack className={styles.scoreContainer}>
-              <Box className={styles.scoreBarContainer}>
-                <Box className={`${styles.scoreBar} ${styles.developer}`}></Box>
+              <Box
+                className={`${styles.scoreBarContainer} ${
+                  styles[`${selected.id}ScoreBar`]
+                }`}
+              >
+                <Box
+                  className={`${styles.scoreBar} ${
+                    styles[`${selected.id}Developer`]
+                  }`}
+                ></Box>
               </Box>
               <Text className={styles.scoreLabel}>8.6</Text>
             </HStack>
             <HStack className={styles.scoreContainer}>
-              <Box className={styles.scoreBarContainer}>
-                <Box className={`${styles.scoreBar} ${styles.community}`}></Box>
+              <Box
+                className={`${styles.scoreBarContainer} ${
+                  styles[`${selected.id}ScoreBar`]
+                }`}
+              >
+                <Box
+                  className={`${styles.scoreBar} ${
+                    styles[`${selected.id}Community`]
+                  }`}
+                ></Box>
               </Box>
               <Text className={styles.scoreLabel}>8.6</Text>
             </HStack>

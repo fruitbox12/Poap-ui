@@ -37,7 +37,6 @@ const theme = extendTheme({
     global: {
       "*": {
         backgroundColor: "transparent",
-        color: "white",
       },
       a: {
         _hover: {
