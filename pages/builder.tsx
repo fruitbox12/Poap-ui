@@ -50,6 +50,10 @@ const Builder = () => {
   const [selectedTheme, setSelectedTheme] = useState<string>("midnight");
   const [uploadedLogoFile, setUploadedLogoFile] = useState<any>("");
   const [uploadedLogoURL, setUploadedLogoURL] = useState<string>("");
+  const [communityName, setCommunityName] = useState<string>("");
+  const [communityDescription, setCommunityDescription] = useState<string>("");
+  const [protocolAddress, setProtocolAddress] = useState<string>("");
+  const [githubURL, setGithubURL] = useState<string>("");
   const [showRank, setShowRank] = useState<boolean>(true);
   const [showTier, setShowTier] = useState<boolean>(true);
 
@@ -57,9 +61,13 @@ const Builder = () => {
     const docRef = doc(db, "contracts", address.toLowerCase());
     await setDoc(docRef, {
       address: address.toLowerCase(),
+      name: communityName,
+      description: communityDescription,
       users: [],
-      protocolAddress: "0x48adbf604c7ff9e2b2e8c01b243ba446538972ea", // TODO: dynamic
-      githubRepoURL: "https://github.com/iamminci/verbsdao",
+
+      protocolAddress:
+        protocolAddress ?? "0x48adbf604c7ff9e2b2e8c01b243ba446538972ea", // TODO: dynamic
+      githubRepoURL: githubURL ?? "https://github.com/iamminci/verbsdao",
     });
   }, []);
 
@@ -76,6 +84,7 @@ const Builder = () => {
       const data = await response.json();
       console.log("data: ", data);
       setPublishedContract(data.contractAddress);
+      const logoURL = handleLogoFileUpload();
       saveContract(data.contractAddress);
     } catch (err) {
       console.log("Error request: ", err);
@@ -83,24 +92,43 @@ const Builder = () => {
   }, []);
 
   const handleFileChange = (event: any) => {
-    console.log("event: ", event.target.files[0]);
-
+    console.log("loaded file: ", event.target.files[0]);
     const file = event.target.files[0];
-
     const url = URL.createObjectURL(file);
     setUploadedLogoURL(url);
     setUploadedLogoFile(event.target.files[0]);
   };
 
-  const handleFileUpload = () => {
+  const handleLogoFileUpload = async () => {
     const formData = new FormData();
     formData.append("myFile", uploadedLogoFile, uploadedLogoFile.name);
 
     console.log(uploadedLogoFile);
 
     // Request made to the backend api
-    // Send formData object
-    // axios.post("api/uploadfile", formData);
+    // await axios.post("api/uploadfile", formData);
+    console.log("logo file successfully uploaded");
+    // return uploadedLogoURL;
+  };
+
+  const handleNameChange = (event: any) => {
+    console.log("name: ", event.target.value);
+    setCommunityName(event.target.value);
+  };
+
+  const handleDescriptionChange = (event: any) => {
+    console.log("name: ", event.target.value);
+    setCommunityDescription(event.target.value);
+  };
+
+  const handleProtocolChange = (event: any) => {
+    console.log("protocol: ", event.target.value);
+    setProtocolAddress(event.target.value);
+  };
+
+  const handleGithubURLChange = (event: any) => {
+    console.log("github: ", event.target.value);
+    setGithubURL(event.target.value);
   };
 
   const toggleRank = (event: any) => {
@@ -123,8 +151,11 @@ const Builder = () => {
             setSelectedTheme={setSelectedTheme}
             selectedTheme={selectedTheme}
             handleFileChange={handleFileChange}
-            handleFileUpload={handleFileUpload}
             uploadedLogoFile={uploadedLogoFile}
+            handleNameChange={handleNameChange}
+            handleDescriptionChange={handleDescriptionChange}
+            handleProtocolChange={handleProtocolChange}
+            handleGithubURLChange={handleGithubURLChange}
             toggleRank={toggleRank}
             toggleTier={toggleTier}
           />
@@ -171,8 +202,11 @@ type EditorProps = {
   selectedTheme: string;
   setSelectedTheme: (theme: string) => void;
   handleFileChange: (event: any) => void;
-  handleFileUpload: () => void;
   uploadedLogoFile: any;
+  handleNameChange: (event: any) => void;
+  handleDescriptionChange: (event: any) => void;
+  handleProtocolChange: (event: any) => void;
+  handleGithubURLChange: (event: any) => void;
   toggleRank: (event: any) => void;
   toggleTier: (event: any) => void;
 };
@@ -182,8 +216,11 @@ const Editor = ({
   selectedTheme,
   setSelectedTheme,
   handleFileChange,
-  handleFileUpload,
   uploadedLogoFile,
+  handleNameChange,
+  handleDescriptionChange,
+  handleProtocolChange,
+  handleGithubURLChange,
   toggleRank,
   toggleTier,
 }: EditorProps) => {
@@ -194,6 +231,15 @@ const Editor = ({
         <Input
           className={styles.editorInput}
           placeholder="Enter the name of your community"
+          onChange={handleNameChange}
+        />
+      </VStack>
+      <VStack className={styles.section}>
+        <Text className={styles.editorHeader}>Description</Text>
+        <Input
+          className={styles.editorInput}
+          placeholder="Enter a description for your community NFT"
+          onChange={handleDescriptionChange}
         />
       </VStack>
       <VStack className={styles.section}>
@@ -247,6 +293,7 @@ const Editor = ({
         <Input
           className={styles.editorInput}
           placeholder="Enter Contract Address"
+          onChange={handleProtocolChange}
         />
         <Select placeholder="Select option" className={styles.editorSelect}>
           <option value="option1">voteProposal</option>
@@ -258,6 +305,7 @@ const Editor = ({
         <Input
           className={styles.editorInput}
           placeholder="Enter Github Repo URL (e.g. https://github.com/iamminci...)"
+          onChange={handleGithubURLChange}
         />
         <Select placeholder="Select option" className={styles.editorSelect}>
           <option value="option1">Number of Commits</option>
