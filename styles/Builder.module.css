@@ -148,7 +148,7 @@
 
 .pastelLavenderFg {
   background: #d4c8f5;
-  border: 1px solid #34313e;
+  border: 1px solid #9688bd;
 }
 
 .selected {
@@ -218,8 +218,8 @@
 
 .pastelLavenderArtworkFg {
   background: #d4c8f5;
-  border: 2px solid #34313e;
-  color: black;
+  border: 2px solid #9688bd;
+  color: #6d618e;
 }
 
 .artworkUpperSection {
@@ -243,12 +243,28 @@
   bottom: -1rem;
 }
 
-.pfpContainer {
+.midnightPfpContainer {
   position: relative;
   width: 357px;
   height: 357px;
   border-radius: 50%;
   border: 6px solid #ffffff;
+}
+
+.creamPfpContainer {
+  position: relative;
+  width: 357px;
+  height: 357px;
+  border-radius: 50%;
+  border: 6px solid #cbcbcb;
+}
+
+.pastelPfpContainer {
+  position: relative;
+  width: 357px;
+  height: 357px;
+  border-radius: 50%;
+  border: 6px solid #9688bd;
 }
 
 .divider {
@@ -264,6 +280,10 @@
 
 .creamDivider {
   border: 1px solid #e0e0e0;
+}
+
+.pastelDivider {
+  border: 1px solid #9688bd;
 }
 
 .walletHeader {
@@ -414,6 +434,13 @@
   background: #c69dff;
 }
 
+.pastelTotal,
+.pastelProtocol,
+.pastelDeveloper,
+.pastelCommunity {
+  background: #9688bd;
+}
+
 .individualStatsContainer {
   padding-top: 1rem;
   width: 100%;
@@ -444,4 +471,12 @@
   font-style: normal;
   font-weight: 700;
   font-size: 36px;
+}
+
+.publishButton {
+  width: 169px;
+  height: 60px;
+
+  background: #0070f3 !important;
+  border-radius: 20px;
 }

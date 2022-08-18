@@ -4,11 +4,12 @@
   height: 100vh;
   background-color: #141d30;
   width: 100%;
+  color: white !important;
 }
 
 .nftContainer {
   width: 1677px;
-  height: 138px;
+  height: 90px;
 
   background: #212837;
   border: 1px solid rgba(255, 255, 255, 0.2);
@@ -21,8 +22,8 @@
 .title {
   font-family: "Poppins";
   font-style: normal;
-  font-weight: 600;
-  font-size: 20px;
+  font-weight: 700;
+  font-size: 30px;
   line-height: 30px;
   /* identical to box height */
 
@@ -40,6 +41,18 @@
   color: #ffffff;
 }
 
+.walletAddress {
+  width: 900px;
+  font-family: "Poppins";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 30px;
+  /* identical to box height */
+
+  color: #ffffff;
+}
+
 .button {
   width: 187px;
   height: 60px;
@@ -47,4 +60,58 @@
   background: #212837 !important;
   border: 1px solid #757575;
   border-radius: 20px;
+}
+
+.headerSection {
+  color: white !important;
+  padding: 0 4rem;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  padding-bottom: 1rem;
+}
+
+.walletAddress {
+  text-align: center;
+  width: 32rem;
+}
+
+.XPscore {
+  text-align: center;
+  width: 8rem;
+}
+
+.scoreSection {
+  width: 24rem;
+  display: flex;
+  justify-content: space-between;
+}
+
+.thirdSection {
+  width: 25rem;
+  padding: 0 1rem;
+  display: flex;
+  justify-content: space-between;
+}
+
+.scoresSection2 {
+  width: 20rem;
+  display: flex;
+  justify-content: space-between;
+}
+
+.thirdSection2 {
+  width: 28rem;
+  display: flex;
+  justify-content: space-between;
+}
+
+.filterSection {
+  width: 100%;
+  justify-content: flex-end;
+  padding-right: 5rem;
+}
+
+.leaderboardSection {
+  gap: 20px;
 }

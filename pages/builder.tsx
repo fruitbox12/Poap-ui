@@ -361,7 +361,9 @@ const Editor = ({
         </HStack>
       </VStack>
       <VStack>
-        <Button onClick={publishNFT}>Publish</Button>
+        <Button className={styles.publishButton} onClick={publishNFT}>
+          Publish
+        </Button>
       </VStack>
     </VStack>
   );
@@ -404,7 +406,7 @@ const Artwork = ({
           ></Image>
         )}
         <VStack className={styles.artworkUpperSection}>
-          <Box className={styles.pfpContainer}>
+          <Box className={styles[`${selected.id}PfpContainer`]}>
             <Image
               src="pfp2.png"
               alt="community logo"

@@ -7,44 +7,67 @@ import Link from "next/link";
 
 const dummyData = [
   {
-    title: "Verbs Dao Community NFT",
+    title: "Web3 Infinity DAO Community NFT",
     desc: "Status: In Progress, 1/10000 Minted",
+    isClosed: false,
   },
 
   {
-    title: "3D Verbs Dao Community NFT",
+    title: "Bored Crepes Yacht Club Community NFT",
     desc: "Status: In Progress, 487/1000 Minted",
+    isDemo: true,
+    isClosed: false,
   },
   {
-    title: "Verb Punks Community NFT",
+    title: "Crypto Monks Community NFT",
     desc: "Status: Completed, 1729/1729 Minted",
+    isClosed: true,
   },
   {
-    title: "Lost Verbs Community NFT",
+    title: "FIL Diamond Hands Community NFT",
     desc: "Status: Completed, 7403/8000 Minted",
+    isClosed: true,
   },
   {
-    title: "Verbles Community NFT",
+    title: "FileDogecoin Community NFT",
     desc: "Status: Completed, 3879/5000 Minted",
+    isClosed: true,
   },
 ];
 
 const Dashboard = () => {
   return (
-    <VStack className={styles.container}>
-      {dummyData.map((item, idx) => (
-        <HStack key={idx} className={styles.nftContainer}>
-          <VStack>
-            <Text className={styles.title}>{item.title}</Text>
-            <Text className={styles.subtitle}>{item.desc}</Text>
-          </VStack>
-          <HStack>
-            <Button className={styles.button}>View Details</Button>
-            <Button className={styles.button}>View Leaderboard</Button>
-            <Button className={styles.button}>Close Minting</Button>
+    <VStack>
+      <VStack className={styles.container}>
+        <Text className={styles.header}>Your Community NFTs</Text>
+        {dummyData.map((item, idx) => (
+          <HStack key={idx} className={styles.nftContainer}>
+            <VStack className={styles.titleContainer}>
+              <Text className={styles.title}>{item.title}</Text>
+              <Text className={styles.subtitle}>{item.desc}</Text>
+            </VStack>
+            <HStack>
+              {item.isDemo ? (
+                <Link href="/detail">
+                  <Button className={styles.button}>View Details</Button>
+                </Link>
+              ) : (
+                <Button className={styles.button}>View Details</Button>
+              )}
+              {item.isDemo ? (
+                <Link href="/leaderboard">
+                  <Button className={styles.button}>View Leaderboard</Button>
+                </Link>
+              ) : (
+                <Button className={styles.button}>View Leaderboard</Button>
+              )}
+              <Button isDisabled={item.isClosed} className={styles.button}>
+                Close Minting
+              </Button>
+            </HStack>
           </HStack>
-        </HStack>
-      ))}
+        ))}
+      </VStack>
     </VStack>
   );
 };

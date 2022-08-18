@@ -4,6 +4,10 @@
   height: 100vh;
   background-color: #141d30;
   width: 100%;
+  color: white;
+}
+
+.upperSection {
 }
 
 .titleContainer {
@@ -11,12 +15,96 @@
 }
 
 .chartContainer {
+  position: relative;
   width: 1234px;
   height: 250px;
 
   background: #212837;
   border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 30px;
+  padding: 1rem;
+}
+
+.line1 {
+  position: absolute;
+  left: 100px;
+  bottom: 50px;
+  width: 270px;
+  height: 2px;
+  background: #ffffff;
+  transform: rotate(175deg);
+}
+
+.line2 {
+  position: absolute;
+  left: 366px;
+  bottom: 66px;
+  width: 270px;
+  height: 2px;
+  background: #ffffff;
+  transform: rotate(178deg);
+}
+
+.line3 {
+  position: absolute;
+  left: 634px;
+  bottom: 89px;
+  width: 270px;
+  height: 2px;
+  background: #ffffff;
+  transform: rotate(172deg);
+}
+
+.line4 {
+  position: absolute;
+  left: 898px;
+  bottom: 143px;
+  width: 270px;
+  height: 2px;
+  background: #ffffff;
+  transform: rotate(165deg);
+}
+
+.chartFooter {
+  width: 100%;
+  justify-content: space-between;
+  padding: 0 2rem;
+}
+
+.chartSidebar {
+  padding-bottom: 2rem;
+  font-size: 10px;
+}
+
+.totalHeader {
+  font-family: "Poppins";
+  font-style: normal;
+  font-weight: 600;
+  font-size: 20px;
+  /* identical to box height */
+
+  color: #ffffff;
+}
+
+.totalSubheader {
+  font-family: "Poppins";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 18px;
+  /* identical to box height */
+
+  color: #ffffff;
+}
+
+.mintingHeader {
+  font-family: "Poppins";
+  font-style: normal;
+  font-weight: 600;
+  font-size: 20px;
+  line-height: 30px;
+  /* identical to box height */
+
+  color: #ffffff;
 }
 
 .header {
@@ -31,7 +119,7 @@
 }
 
 .nft {
-  width: 600px;
+  width: 580px;
 }
 
 .nftContainer {
@@ -60,6 +148,7 @@
 
   justify-content: center;
   align-items: center;
+  gap: 10px;
 }
 
 .title {
@@ -101,22 +190,134 @@
 
 .firstContainer {
   width: 369px;
-  height: 610px;
+  height: 570px;
   left: 28px;
   top: 477px;
 
   background: #212837;
   border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 30px;
+  padding: 2rem 1rem;
+  gap: 10px;
 }
 
 .secondContainer {
   width: 687px;
-  height: 610px;
-  left: 425px;
-  top: 477px;
+  height: 570px;
 
   background: #212837;
   border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 30px;
+  padding: 2rem 1rem;
+  overflow-y: scroll;
+
+  gap: 10px;
+}
+
+.templateSelectionContainer {
+  width: 200px;
+  height: 236px;
+
+  padding: 1rem;
+
+  background: #141d30;
+  border-radius: 20px;
+
+  overflow-x: scroll;
+  overflow-y: hidden;
+
+  font-family: poppins;
+}
+
+.themeContainer {
+  width: 165px;
+  height: 165px;
+  border-radius: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.themeInnerContainer {
+  width: 155px;
+  height: 155px;
+  border-radius: 20px;
+}
+
+.midnightDarkBg {
+  background: #100e14;
+}
+
+.midnightDarkFg {
+  background: #1a1820;
+  border: 1px solid #34313e;
+}
+
+.logoNameSection {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 70%;
+  height: 60px;
+
+  background: #141d30;
+  border-radius: 20px;
+}
+
+.logoInput {
+  width: 150px;
+  color: transparent !important;
+}
+
+.logoInput::file-selector-button {
+  width: 120px;
+  height: 40px;
+  color: white;
+  font-family: "Inter";
+
+  background: transparent !important;
+  border: 1px solid #8d8d8d;
+  border-radius: 7px;
+}
+
+.editorSelect {
+  background: #141d30 !important;
+  border-radius: 20px;
+
+  font-family: "poppins";
+
+  border: none !important;
+  outline: none;
+}
+
+.editorInput {
+  width: 100%;
+  padding: 0.5rem;
+
+  font-family: "poppins";
+
+  background-color: #141d30 !important;
+  border-radius: 20px;
+
+  border: none !important;
+  outline: none;
+}
+
+.editorHeader {
+  font-family: "Montserrat";
+  font-style: normal;
+  font-weight: 700;
+  font-size: 18px;
+  line-height: 27px;
+
+  color: #ffffff;
+}
+
+.editorButton {
+  width: 169px;
+  height: 60px;
+
+  background: transparent !important;
+  border: 1px solid #7b7b7b;
+  border-radius: 20px;
 }
