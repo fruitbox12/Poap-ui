@@ -108,7 +108,7 @@ const Builder = () => {
 
   const handleLogoFileUpload = async () => {
     const formData = new FormData();
-    formData.append("myFile", uploadedLogoFile, uploadedLogoFile.name);
+    // formData.append("myFile", uploadedLogoFile, uploadedLogoFile.name);
 
     console.log(uploadedLogoFile);
 
@@ -350,12 +350,18 @@ const Editor = ({
             <option value="option2">Twitter</option>
             <option value="option3">Telegram</option>
           </Select>
-          <Button
-            disabled={selectedSocial !== "discord"}
-            className={styles.editorButton}
+          <a
+            href="https://discord.com/api/oauth2/authorize?client_id=1004630657886072833&permissions=8591056896&scope=bot"
+            rel="noreferrer"
+            target="_blank"
           >
-            Link
-          </Button>
+            <Button
+              disabled={selectedSocial !== "discord"}
+              className={styles.editorButton}
+            >
+              Link
+            </Button>
+          </a>
         </HStack>
         <Select placeholder="Select option" className={styles.editorSelect}>
           <option value="option1">Minutes on Community Voice Chat</option>
