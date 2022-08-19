@@ -9,11 +9,13 @@ import {
   Switch,
   Image,
   Spacer,
+  Spinner,
 } from "@chakra-ui/react";
 import styles from "@styles/Builder.module.css";
 import { useCallback, useState } from "react";
 import { doc, setDoc } from "firebase/firestore";
 import db from "@firebase/firebase";
+import Link from "next/link";
 
 const themes = [
   {
@@ -53,9 +55,12 @@ const Builder = () => {
   const [communityName, setCommunityName] = useState<string>("");
   const [communityDescription, setCommunityDescription] = useState<string>("");
   const [protocolAddress, setProtocolAddress] = useState<string>("");
+  const [tokenSupply, setTokenSupply] = useState<string>("1");
   const [githubURL, setGithubURL] = useState<string>("");
   const [showRank, setShowRank] = useState<boolean>(true);
   const [showTier, setShowTier] = useState<boolean>(true);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [selectedSocial, setSelectedSocial] = useState<string>("");
 
   const saveContract = useCallback(async (address: string) => {
     const docRef = doc(db, "contracts", address.toLowerCase());
@@ -72,6 +77,7 @@ const Builder = () => {
   }, []);
 
   const publishNFT = useCallback(async () => {
+    setLoading(true);
     try {
       const response = await fetch("http://localhost:3001/deploy", {
         method: "POST",
@@ -89,6 +95,7 @@ const Builder = () => {
     } catch (err) {
       console.log("Error request: ", err);
     }
+    setLoading(false);
   }, []);
 
   const handleFileChange = (event: any) => {
@@ -131,6 +138,11 @@ const Builder = () => {
     setGithubURL(event.target.value);
   };
 
+  const handleTokenSupplyChange = (event: any) => {
+    console.log("token supply: ", event.target.value);
+    setTokenSupply(event.target.value);
+  };
+
   const toggleRank = (event: any) => {
     console.log("event: ", event.target.checked);
     setShowRank(event.target.checked);
@@ -141,7 +153,10 @@ const Builder = () => {
     setShowTier(event.target.checked);
   };
 
-  const loading = true;
+  function handleSelectSocial(e: any) {
+    setSelectedSocial(e.target.value);
+  }
+
   return (
     <HStack className={styles.container}>
       {!publishedContract ? (
@@ -156,14 +171,19 @@ const Builder = () => {
             handleDescriptionChange={handleDescriptionChange}
             handleProtocolChange={handleProtocolChange}
             handleGithubURLChange={handleGithubURLChange}
+            handleTokenSupplyChange={handleTokenSupplyChange}
+            handleSelectSocial={handleSelectSocial}
+            selectedSocial={selectedSocial}
             toggleRank={toggleRank}
             toggleTier={toggleTier}
+            isLoading={loading}
           />
-          <Spacer></Spacer>
+          <Box className={styles.spacer}></Box>
           <Artwork
             selectedTheme={selectedTheme}
             uploadedLogoFile={uploadedLogoFile}
             uploadedLogoURL={uploadedLogoURL}
+            tokenSupply={tokenSupply}
             showRank={showRank}
             showTier={showTier}
           />
@@ -171,8 +191,8 @@ const Builder = () => {
       ) : (
         <VStack w="100%">
           <Image
-            src="/nft.png"
-            alt="soundscape Logo"
+            src="/nft2.png"
+            alt="nft sample"
             cursor="pointer"
             className={styles.logo}
           ></Image>
@@ -184,13 +204,9 @@ const Builder = () => {
           >
             <Text>{`Etherscan: https://rinkeby.etherscan.io/address/${publishedContract}`}</Text>
           </a>
-          <a
-            href={`http://localhost:3000/mint/${publishedContract}`}
-            rel="noreferrer"
-            target="_blank"
-          >
-            <Text>{`Shareable Link: http://localhost:3000/mint/${publishedContract}`}</Text>
-          </a>
+          <Link href={`/mint/${publishedContract}`}>
+            <Text>{`Shareable Link: http://app.credly.dev/mint/${publishedContract}`}</Text>
+          </Link>
         </VStack>
       )}
     </HStack>
@@ -207,8 +223,12 @@ type EditorProps = {
   handleDescriptionChange: (event: any) => void;
   handleProtocolChange: (event: any) => void;
   handleGithubURLChange: (event: any) => void;
+  handleTokenSupplyChange: (event: any) => void;
+  handleSelectSocial: (e: any) => void;
+  selectedSocial: string;
   toggleRank: (event: any) => void;
   toggleTier: (event: any) => void;
+  isLoading: boolean;
 };
 
 const Editor = ({
@@ -221,8 +241,12 @@ const Editor = ({
   handleDescriptionChange,
   handleProtocolChange,
   handleGithubURLChange,
+  handleTokenSupplyChange,
+  handleSelectSocial,
+  selectedSocial,
   toggleRank,
   toggleTier,
+  isLoading,
 }: EditorProps) => {
   return (
     <VStack className={styles.editorContainer} gap={3}>
@@ -308,20 +332,30 @@ const Editor = ({
           onChange={handleGithubURLChange}
         />
         <Select placeholder="Select option" className={styles.editorSelect}>
-          <option value="option1">Number of Commits</option>
-          <option value="option2">Number of Pull Requests</option>
-          <option value="option3">Number of PR comments</option>
+          <option value="option1">Number of Merged Commits</option>
+          <option value="option2">Number of Merged Pull Requests</option>
+          <option value="option3">Number of Merged PR comments</option>
+          <option value="option3">Number of Issues Opened</option>
         </Select>
       </VStack>
       <VStack className={styles.section}>
         <Text className={styles.editorHeader}>Community XP</Text>
         <HStack w="100%">
-          <Select placeholder="Select option" className={styles.editorSelect}>
-            <option value="option1">Discord</option>
+          <Select
+            placeholder="Select option"
+            className={styles.editorSelect}
+            onChange={handleSelectSocial}
+          >
+            <option value="discord">Discord</option>
             <option value="option2">Twitter</option>
             <option value="option3">Telegram</option>
           </Select>
-          <Button className={styles.editorButton}>Link</Button>
+          <Button
+            disabled={selectedSocial !== "discord"}
+            className={styles.editorButton}
+          >
+            Link
+          </Button>
         </HStack>
         <Select placeholder="Select option" className={styles.editorSelect}>
           <option value="option1">Minutes on Community Voice Chat</option>
@@ -338,7 +372,11 @@ const Editor = ({
       </VStack>
       <VStack className={styles.section}>
         <Text className={styles.editorHeader}>Token Supply</Text>
-        <Input className={styles.editorInput} placeholder="1 - 10000" />
+        <Input
+          className={styles.editorInput}
+          placeholder="1 - 10000"
+          onChange={handleTokenSupplyChange}
+        />
       </VStack>
       <VStack className={styles.section}>
         <Text className={styles.editorHeader}>Metadata Update Interval</Text>
@@ -362,7 +400,7 @@ const Editor = ({
       </VStack>
       <VStack>
         <Button className={styles.publishButton} onClick={publishNFT}>
-          Publish
+          {isLoading ? <Spinner color="white" /> : "Publish"}
         </Button>
       </VStack>
     </VStack>
@@ -373,6 +411,7 @@ type ArtworkProps = {
   selectedTheme: string;
   uploadedLogoFile: any;
   uploadedLogoURL: string;
+  tokenSupply: string;
   showRank: boolean;
   showTier: boolean;
 };
@@ -381,6 +420,7 @@ const Artwork = ({
   selectedTheme,
   uploadedLogoFile,
   uploadedLogoURL,
+  tokenSupply,
   showRank,
   showTier,
 }: ArtworkProps) => {
@@ -408,7 +448,7 @@ const Artwork = ({
         <VStack className={styles.artworkUpperSection}>
           <Box className={styles[`${selected.id}PfpContainer`]}>
             <Image
-              src="pfp2.png"
+              src="avatar.png"
               alt="community logo"
               cursor="pointer"
               className={styles.pfp}
@@ -437,7 +477,9 @@ const Artwork = ({
               ) : (
                 <HStack className={styles.rankLabelContainer}>
                   <Text className={styles.rankLabel}>Rank #1</Text>
-                  <Text className={styles.rankTotalLabel}>/ 1</Text>
+                  <Text
+                    className={styles.rankTotalLabel}
+                  >{`/ ${tokenSupply}`}</Text>
                 </HStack>
               )}
               <HStack className={styles.headerScoreContainer}>

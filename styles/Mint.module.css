@@ -44,9 +44,10 @@
 }
 
 .inputSection {
-  width: 90%;
+  width: 100%;
   padding: 0 1rem;
   align-items: flex-start !important;
+  color: white;
 }
 
 .title {
@@ -60,23 +61,67 @@
   color: #ffffff;
 }
 .subtitle {
-  width: 435px;
+  width: 500px;
   height: 21px;
-  left: 920px;
-  top: 393px;
-
   font-family: "Poppins";
   font-style: normal;
   font-weight: 400;
   font-size: 14px;
   line-height: 21px;
-  /* identical to box height */
-
   text-align: center;
-
   color: rgba(255, 255, 255, 0.5);
 }
 
 .nft {
   width: 580px;
+}
+
+.detailsSection {
+  width: 90%;
+  padding: 0 1rem;
+  align-items: flex-start !important;
+  gap: 1rem;
+}
+
+.buttonSection {
+  width: 100%;
+  padding: 0 1rem;
+  align-items: flex-end !important;
+  gap: 1rem;
+}
+
+.logoNameSection {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 70%;
+  height: 40px;
+
+  background: #141d30;
+  border-radius: 10px;
+}
+
+.logoInput {
+  width: 150px;
+  color: transparent !important;
+}
+
+.logoInput::file-selector-button {
+  width: 120px;
+  height: 40px;
+  color: white;
+  font-family: "Inter";
+
+  background: transparent !important;
+  border: 1px solid #e6e6e6;
+  border-radius: 7px;
+}
+
+.successSection {
+  width: 100%;
+  padding-top: 6rem;
+  font-family: "Montserrat";
+  color: white;
+  font-size: 18px;
+  font-weight: 500;
 }

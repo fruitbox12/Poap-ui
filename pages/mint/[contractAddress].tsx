@@ -1,4 +1,13 @@
-import { HStack, VStack, Image, Text, Input, Button } from "@chakra-ui/react";
+import {
+  HStack,
+  VStack,
+  Image,
+  Text,
+  Input,
+  Button,
+  Box,
+  Spinner,
+} from "@chakra-ui/react";
 import styles from "@styles/Mint.module.css";
 import { useRouter } from "next/router";
 import { useAccount, useContractWrite, usePrepareContractWrite } from "wagmi";
@@ -15,10 +24,13 @@ const Mint = () => {
 
   const [githubUsername, setGithubUsername] = useState<string>("");
   const [discordUsername, setDiscordUsername] = useState<string>("");
+  const [uploadedLogoFile, setUploadedLogoFile] = useState<any>("");
+  const [uploadedLogoURL, setUploadedLogoURL] = useState<string>("");
+  const [transactionHash, setTransactionHash] = useState<string>("");
 
   const { contractAddress } = router.query;
   const nftAddress = contractAddress as string;
-  const loading = true;
+  // const loading = true;
 
   const { config } = usePrepareContractWrite({
     addressOrName: nftAddress
@@ -29,6 +41,8 @@ const Mint = () => {
   });
 
   const { data: txn, isLoading, isSuccess, write } = useContractWrite(config);
+
+  // const isLoading = true;
 
   const saveUserInfo = useCallback(
     async (
@@ -59,11 +73,21 @@ const Mint = () => {
     []
   );
 
+  const handleFileChange = (event: any) => {
+    console.log("loaded file: ", event.target.files[0]);
+    const file = event.target.files[0];
+    const url = URL.createObjectURL(file);
+    setUploadedLogoURL(url);
+    setUploadedLogoFile(event.target.files[0]);
+  };
+
   useEffect(() => {
     async function saveDB() {
       if (isSuccess) {
         if (!address || !txn) return;
-        await txn.wait();
+        const txnResponse = await txn.wait();
+        console.log("txnResponse: ", txnResponse);
+        setTransactionHash(txnResponse.transactionHash);
         await saveUserInfo(
           nftAddress,
           address.toLowerCase(),
@@ -73,15 +97,7 @@ const Mint = () => {
       }
     }
     saveDB();
-  }, [
-    address,
-    discordUsername,
-    githubUsername,
-    isSuccess,
-    nftAddress,
-    saveUserInfo,
-    txn,
-  ]);
+  }, [isSuccess]);
 
   const handleMint = async () => {
     await write?.();
@@ -109,25 +125,45 @@ const Mint = () => {
 
   const disableButton = !write || !githubUsername || !discordUsername;
 
+  const completed = true;
+
   return (
     <HStack className={styles.container}>
       <Image
-        src="/nft.png"
+        src={uploadedLogoURL ? "/nft3.png" : "/nft2.png"}
         alt="nft sample"
         cursor="pointer"
         className={styles.nft}
       ></Image>
 
-      <VStack className={styles.mintContainer} gap={5}>
+      <VStack className={styles.mintContainer} gap={10}>
         <VStack>
-          <Text className={styles.title}>VerbsDAO Community NFT</Text>
+          <Text className={styles.title}>Web3 Infinity Community NFT</Text>
           <Text className={styles.subtitle}>
-            Community NFT is a soul-bound token (non-transferrable).
+            Note this Community NFT is a non-transferrable, soul-bound token.
           </Text>
         </VStack>
-
-        {loading ? (
-          <VStack>
+        {!isSuccess ? (
+          <VStack className={styles.detailsSection}>
+            <VStack className={styles.inputSection}>
+              <Text className={styles.header}>Logo</Text>
+              <HStack w="100%">
+                <Box className={styles.logoNameSection}>
+                  <Text color="white" fontSize=".7rem" opacity={0.7}>
+                    {!uploadedLogoFile
+                      ? "Please upload image with square dimensions."
+                      : uploadedLogoFile.name}
+                  </Text>
+                </Box>
+                <input
+                  type="file"
+                  id="logoInput"
+                  accept="image/png, image/jpg"
+                  onChange={handleFileChange}
+                  className={styles.logoInput}
+                />
+              </HStack>
+            </VStack>
             <VStack className={styles.inputSection}>
               <Text className={styles.header}>Github Username</Text>
               <Input
@@ -145,23 +181,42 @@ const Mint = () => {
                 onChange={handleDiscordInput}
               />
             </VStack>
-
-            <Button
-              bgColor="#3A76F2"
-              disabled={disableButton}
-              onClick={handleMint}
-            >
-              Mint Free NFT
-            </Button>
+            <VStack className={styles.buttonSection}>
+              <Button
+                bgColor="#3A76F2"
+                disabled={disableButton}
+                onClick={handleMint}
+                color="white"
+                width="150px"
+              >
+                {isLoading ? <Spinner color="white" /> : "Mint Free NFT"}
+              </Button>
+            </VStack>
           </VStack>
         ) : (
-          <VStack>
+          <VStack w="100%" className={styles.successSection}>
             <Text>Community NFT has been successfully minted!</Text>
-            <Text>Etherscan: ...</Text>
+            <a
+              href={`https://rinkeby.etherscan.io/tx/${transactionHash}`}
+              rel="noreferrer"
+              target="_blank"
+            >
+              <Text>{`Etherscan: https://rinkeby.etherscan.io/tx/${abridgeAddress(
+                transactionHash
+              )}`}</Text>
+            </a>
           </VStack>
         )}
       </VStack>
     </HStack>
   );
 };
+
+export function abridgeAddress(address?: string) {
+  if (!address) return address;
+  const l = address.length;
+  if (l < 20) return address;
+  return `${address.substring(0, 6)}...${address.substring(l - 4, l)}`;
+}
+
 export default Mint;
