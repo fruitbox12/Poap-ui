@@ -20,3 +20,10 @@ This project was built as a submission to the Web3 Infinity Hackathon.
 - Hardhat
 - IPFS (Fleek, NFT.Storage)
 - Third-Party API's (Etherscan, Discord, Github, Twitter)
+
+### Related Repositories
+
+- Credly Server: https://github.com/iamminci/credly-server
+- Credly Cron Job: https://github.com/iamminci/credly-cron
+- Credly Discord Listener: https://github.com/iamminci/credly-discord
+- Web3 Infinity DAO Website: https://github.com/iamminci/web3infinitydao
