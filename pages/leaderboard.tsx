@@ -164,17 +164,24 @@ const Leaderboard = () => {
     const newScores = JSON.parse(JSON.stringify(scores));
     if (e.target.value === "totalScore") {
       newScores.sort(
-        (a: ScoreData, b: ScoreData) => b.totalScore - a.totalScore
+        (a: ScoreData, b: ScoreData) =>
+          Number(b.totalScore) - Number(a.totalScore)
       );
     }
     if (e.target.value === "pScore") {
-      newScores.sort((a: ScoreData, b: ScoreData) => b.pScore - a.pScore);
+      newScores.sort(
+        (a: ScoreData, b: ScoreData) => Number(b.pScore) - Number(a.pScore)
+      );
     }
     if (e.target.value === "dScore") {
-      newScores.sort((a: ScoreData, b: ScoreData) => b.dScore - a.dScore);
+      newScores.sort(
+        (a: ScoreData, b: ScoreData) => Number(b.dScore) - Number(a.dScore)
+      );
     }
     if (e.target.value === "cScore") {
-      newScores.sort((a: ScoreData, b: ScoreData) => b.cScore - a.cScore);
+      newScores.sort(
+        (a: ScoreData, b: ScoreData) => Number(b.cScore) - Number(a.cScore)
+      );
     }
     setScores(newScores);
   }
