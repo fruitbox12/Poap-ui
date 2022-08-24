@@ -18,7 +18,7 @@ This project was built as a submission to the Web3 Infinity Hackathon.
 - Firebase
 - Ethers
 - Hardhat
-- IPFS (Fleek, NFT.Storage)
+- IPFS (Fleek, Web3.Storage)
 - Third-Party API's (Etherscan, Discord, Github, Twitter)
 
 ### Related Repositories
