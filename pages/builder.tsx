@@ -191,21 +191,24 @@ const Builder = () => {
       ) : (
         <VStack w="100%">
           <Image
-            src="/nft2.png"
+            src="/buidl.png"
             alt="nft sample"
             cursor="pointer"
             className={styles.logo}
+            w="700px"
           ></Image>
-          <Text>Community NFT has been successfully published!</Text>
+          <Text>
+            The BUIDL IT DAO Community NFT has been successfully published!
+          </Text>
           <a
-            href={`https://rinkeby.etherscan.io/address/${publishedContract}`}
+            href={`https://polygonscan.com/address/${publishedContract}`}
             rel="noreferrer"
             target="_blank"
           >
-            <Text>{`Etherscan: https://rinkeby.etherscan.io/address/${publishedContract}`}</Text>
+            <Text>{`Polygonscan: https://polygonscan.com/address/${publishedContract}`}</Text>
           </a>
           <Link href={`/mint/${publishedContract}`}>
-            <Text>{`Shareable Link: http://app.credly.dev/mint/${publishedContract}`}</Text>
+            <Text>{`Shareable Link: http://app.credly.fun/mint/${publishedContract}`}</Text>
           </Link>
         </VStack>
       )}

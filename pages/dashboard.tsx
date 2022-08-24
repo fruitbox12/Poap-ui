@@ -7,7 +7,7 @@ import Link from "next/link";
 
 const dummyData = [
   {
-    title: "Web3 Infinity DAO Community NFT",
+    title: "BUIDL IT DAO Community NFT",
     desc: "Status: In Progress, 1/10000 Minted",
     isClosed: false,
   },
@@ -24,12 +24,12 @@ const dummyData = [
     isClosed: true,
   },
   {
-    title: "FIL Diamond Hands Community NFT",
+    title: "MATIC Diamond Hands Community NFT",
     desc: "Status: Completed, 7403/8000 Minted",
     isClosed: true,
   },
   {
-    title: "FileDogecoin Community NFT",
+    title: "MATIC Doge Community NFT",
     desc: "Status: Completed, 3879/5000 Minted",
     isClosed: true,
   },

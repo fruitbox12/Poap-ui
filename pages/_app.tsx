@@ -16,7 +16,7 @@ import merge from "lodash.merge";
 import { withTheme } from "@emotion/react";
 
 const { chains, provider } = configureChains(
-  [chain.rinkeby, chain.mainnet, chain.polygon, chain.optimism, chain.arbitrum],
+  [chain.polygon, chain.polygonMumbai],
   [publicProvider()]
 );
 

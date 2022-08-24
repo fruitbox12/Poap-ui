@@ -7,6 +7,8 @@ import {
   Button,
   Box,
   Spinner,
+  Spacer,
+  IconButton,
 } from "@chakra-ui/react";
 import styles from "@styles/Mint.module.css";
 import { useRouter } from "next/router";
@@ -16,6 +18,8 @@ import communityNFT from "@data/CommunityNFT.json";
 import { doc, setDoc, updateDoc, arrayUnion } from "firebase/firestore";
 import db from "@firebase/firebase";
 import { useCallback, useEffect, useState } from "react";
+import { ConnectButton } from "@rainbow-me/rainbowkit";
+import { FaGithub } from "react-icons/fa";
 
 const Mint = () => {
   const { address, isConnecting, isDisconnected } = useAccount();
@@ -35,7 +39,7 @@ const Mint = () => {
   const { config } = usePrepareContractWrite({
     addressOrName: nftAddress
       ? nftAddress
-      : "0x2E20684B8082aaeE594999324E154111d55b58bb",
+      : "0xD7c9cAae85de9b2B530DEb3e9d3CD730D7e564d0",
     contractInterface: communityNFT.abi,
     functionName: "mint",
   });
@@ -119,96 +123,121 @@ const Mint = () => {
     []
   );
 
-  if (!address) {
-    return;
-  }
-
   const disableButton = !write || !githubUsername || !discordUsername;
 
   const completed = true;
 
   return (
-    <HStack className={styles.container}>
-      <Image
-        src={uploadedLogoURL ? "/nft3.png" : "/nft2.png"}
-        alt="nft sample"
-        cursor="pointer"
-        className={styles.nft}
-      ></Image>
-
-      <VStack className={styles.mintContainer} gap={10}>
-        <VStack>
-          <Text className={styles.title}>Web3 Infinity Community NFT</Text>
-          <Text className={styles.subtitle}>
-            Note this Community NFT is a non-transferrable, soul-bound token.
-          </Text>
-        </VStack>
-        {!isSuccess ? (
-          <VStack className={styles.detailsSection}>
-            <VStack className={styles.inputSection}>
-              <Text className={styles.header}>Logo</Text>
-              <HStack w="100%">
-                <Box className={styles.logoNameSection}>
-                  <Text color="white" fontSize=".7rem" opacity={0.7}>
-                    {!uploadedLogoFile
-                      ? "Please upload image with square dimensions."
-                      : uploadedLogoFile.name}
-                  </Text>
-                </Box>
-                <input
-                  type="file"
-                  id="logoInput"
-                  accept="image/png, image/jpg"
-                  onChange={handleFileChange}
-                  className={styles.logoInput}
-                />
-              </HStack>
-            </VStack>
-            <VStack className={styles.inputSection}>
-              <Text className={styles.header}>Github Username</Text>
-              <Input
-                className={styles.input}
-                placeholder="@iamminci"
-                onChange={handleGithubInput}
-              />
-            </VStack>
-
-            <VStack className={styles.inputSection}>
-              <Text className={styles.header}>Discord Username</Text>
-              <Input
-                className={styles.input}
-                placeholder="@minci#4229"
-                onChange={handleDiscordInput}
-              />
-            </VStack>
-            <VStack className={styles.buttonSection}>
-              <Button
-                bgColor="#3A76F2"
-                disabled={disableButton}
-                onClick={handleMint}
-                color="white"
-                width="150px"
-              >
-                {isLoading ? <Spinner color="white" /> : "Mint Free NFT"}
-              </Button>
-            </VStack>
-          </VStack>
-        ) : (
-          <VStack w="100%" className={styles.successSection}>
-            <Text>Community NFT has been successfully minted!</Text>
+    <>
+      {!address ? (
+        <HStack className={styles.container}>
+          <VStack gap={2}>
+            <h1 className={styles.title}>Connect your wallet</h1>
+            <Text className={styles.subtitle}>
+              Mint your BUIDL IT Community NFT for free!
+            </Text>
+            <Spacer h="10px"></Spacer>
+            <ConnectButton />
+            <Spacer h="10px"></Spacer>
             <a
-              href={`https://rinkeby.etherscan.io/tx/${transactionHash}`}
+              href="https://github.com/interform-open-web/interform"
               rel="noreferrer"
               target="_blank"
             >
-              <Text>{`Etherscan: https://rinkeby.etherscan.io/tx/${abridgeAddress(
-                transactionHash
-              )}`}</Text>
+              <IconButton
+                aria-label="github icon"
+                colorScheme="dark"
+                variant="ghost"
+                icon={<FaGithub className={styles.githubButton} />}
+              />
             </a>
           </VStack>
-        )}
-      </VStack>
-    </HStack>
+        </HStack>
+      ) : (
+        <HStack className={styles.container}>
+          <Image
+            src={uploadedLogoURL ? "/buidl2.png" : "/buidl.png"}
+            alt="nft sample"
+            cursor="pointer"
+            className={styles.nft}
+          ></Image>
+
+          <VStack className={styles.mintContainer} gap={10}>
+            <VStack>
+              <Text className={styles.title}>BUIDL IT DAO Community NFT</Text>
+              <Text className={styles.subtitle}>
+                Note this Community NFT is a non-transferrable, soul-bound
+                token.
+              </Text>
+            </VStack>
+            {!isSuccess ? (
+              <VStack className={styles.detailsSection}>
+                <VStack className={styles.inputSection}>
+                  <Text className={styles.header}>Logo</Text>
+                  <HStack w="100%">
+                    <Box className={styles.logoNameSection}>
+                      <Text color="white" fontSize=".7rem" opacity={0.7}>
+                        {!uploadedLogoFile
+                          ? "Please upload image with square dimensions."
+                          : uploadedLogoFile.name}
+                      </Text>
+                    </Box>
+                    <input
+                      type="file"
+                      id="logoInput"
+                      accept="image/png, image/jpg"
+                      onChange={handleFileChange}
+                      className={styles.logoInput}
+                    />
+                  </HStack>
+                </VStack>
+                <VStack className={styles.inputSection}>
+                  <Text className={styles.header}>Github Username</Text>
+                  <Input
+                    className={styles.input}
+                    placeholder="@iamminci"
+                    onChange={handleGithubInput}
+                  />
+                </VStack>
+
+                <VStack className={styles.inputSection}>
+                  <Text className={styles.header}>Discord Username</Text>
+                  <Input
+                    className={styles.input}
+                    placeholder="@minci#4229"
+                    onChange={handleDiscordInput}
+                  />
+                </VStack>
+                <VStack className={styles.buttonSection}>
+                  <Button
+                    bgColor="#3A76F2"
+                    disabled={disableButton}
+                    onClick={handleMint}
+                    color="white"
+                    width="150px"
+                  >
+                    {isLoading ? <Spinner color="white" /> : "Mint Free NFT"}
+                  </Button>
+                </VStack>
+              </VStack>
+            ) : (
+              <VStack w="100%" className={styles.successSection}>
+                <Text>Community NFT has been successfully minted!</Text>
+                <a
+                  href={`https://polygonscan.com/tx/${transactionHash}`}
+                  rel="noreferrer"
+                  target="_blank"
+                >
+                  <Text>{`Polygonscan: https://polygonscan.com/tx/${abridgeAddress(
+                    transactionHash
+                  )}`}</Text>
+                </a>
+              </VStack>
+            )}
+          </VStack>
+        </HStack>
+      )}
+    </>
   );
 };
 
