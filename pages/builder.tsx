@@ -8,7 +8,6 @@ import {
   Select,
   Switch,
   Image,
-  Spacer,
   Spinner,
 } from "@chakra-ui/react";
 import styles from "@styles/Builder.module.css";
@@ -16,6 +15,15 @@ import { useCallback, useState } from "react";
 import { doc, setDoc } from "firebase/firestore";
 import db from "@firebase/firebase";
 import Link from "next/link";
+import withTransition from "@components/withTransition";
+import { useAccount } from "wagmi";
+import { Tooltip } from "@chakra-ui/react";
+import { Web3Storage } from "web3.storage";
+import { abridgeAddressShort } from "@utils/abridgeAddress";
+
+const WEB3_STORAGE_TOKEN =
+  process.env.NEXT_PUBLIC_WEB3_STORAGE_API_KEY ??
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweERjNTkyMTc3NjlhNjFkMjU1NzliMDlmNzhBQWMyYkNGMTY0NDcxMmQiLCJpc3MiOiJ3ZWIzLXN0b3JhZ2UiLCJpYXQiOjE2NjEwNTcyNzU5NDMsIm5hbWUiOiJnaWZ0bHkifQ.0behxUifkGPImkPNiaZOFw-61QP8NszNvw6UOEd1Eyo";
 
 const themes = [
   {
@@ -47,13 +55,21 @@ const themes = [
   },
 ];
 
+const client = new Web3Storage({
+  token: WEB3_STORAGE_TOKEN,
+  endpoint: new URL("https://api.web3.storage"),
+});
+
 const Builder = () => {
+  const { address: userAddress } = useAccount();
   const [publishedContract, setPublishedContract] = useState<string>("");
   const [selectedTheme, setSelectedTheme] = useState<string>("midnight");
   const [uploadedLogoFile, setUploadedLogoFile] = useState<any>("");
   const [uploadedLogoURL, setUploadedLogoURL] = useState<string>("");
   const [communityName, setCommunityName] = useState<string>("");
+  const [communitySymbol, setCommunitySymbol] = useState<string>("");
   const [communityDescription, setCommunityDescription] = useState<string>("");
+  const [communityURL, setCommunityURL] = useState<string>("");
   const [protocolAddress, setProtocolAddress] = useState<string>("");
   const [tokenSupply, setTokenSupply] = useState<string>("1");
   const [githubURL, setGithubURL] = useState<string>("");
@@ -62,94 +78,148 @@ const Builder = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [selectedSocial, setSelectedSocial] = useState<string>("");
 
-  const saveContract = useCallback(async (address: string) => {
-    const docRef = doc(db, "contracts", address.toLowerCase());
-    await setDoc(docRef, {
-      address: address.toLowerCase(),
-      name: communityName,
-      description: communityDescription,
-      users: [],
-
-      protocolAddress:
-        protocolAddress ?? "0x48adbf604c7ff9e2b2e8c01b243ba446538972ea", // TODO: dynamic
-      githubRepoURL: githubURL ?? "https://github.com/iamminci/verbsdao",
-    });
-  }, []);
-
-  const publishNFT = useCallback(async () => {
-    setLoading(true);
-    try {
-      const response = await fetch("http://localhost:3001/deploy", {
-        method: "POST",
-        body: JSON.stringify({ tokenSupply: 100 }),
-        headers: {
-          "content-type": "application/json",
-          "Access-Control-Allow-Origin": "*",
-        },
+  const saveContract = useCallback(
+    async (contractAddress: string) => {
+      const docRef = doc(db, "contracts", contractAddress.toLowerCase());
+      await setDoc(docRef, {
+        owner: userAddress?.toLowerCase(),
+        address: contractAddress.toLowerCase(),
+        name: communityName,
+        symbol: communitySymbol,
+        link: communityURL,
+        description: communityDescription,
+        theme: selectedTheme,
+        tokenSupply: tokenSupply,
+        users: [],
+        protocolAddress:
+          protocolAddress ?? "0x48adbf604c7ff9e2b2e8c01b243ba446538972ea", // TODO: dynamic
+        githubRepoURL: githubURL ?? "https://github.com/iamminci/verbsdao",
+        updateInterval: "monthly",
+        createdAt: new Date(),
       });
-      const data = await response.json();
-      console.log("data: ", data);
-      setPublishedContract(data.contractAddress);
-      const logoURL = handleLogoFileUpload();
-      saveContract(data.contractAddress);
-    } catch (err) {
-      console.log("Error request: ", err);
-    }
-    setLoading(false);
-  }, []);
+    },
+    [
+      communityDescription,
+      communityName,
+      communitySymbol,
+      communityURL,
+      githubURL,
+      protocolAddress,
+      selectedTheme,
+      tokenSupply,
+      userAddress,
+    ]
+  );
 
   const handleFileChange = (event: any) => {
-    console.log("loaded file: ", event.target.files[0]);
     const file = event.target.files[0];
     const url = URL.createObjectURL(file);
     setUploadedLogoURL(url);
     setUploadedLogoFile(event.target.files[0]);
   };
 
-  const handleLogoFileUpload = async () => {
-    const formData = new FormData();
-    // formData.append("myFile", uploadedLogoFile, uploadedLogoFile.name);
+  const getFilesObject = useCallback(
+    (imageCID?: string) => {
+      const formData = {
+        name: `${communityName} Community NFT`,
+        description: communityDescription,
+        image: imageCID
+          ? `https://${imageCID}.ipfs.w3s.link/logo.png`
+          : "https://bafybeidsw3nosqs6ydqwak2fry3wmb3dklgmml54n55j2jnu32zubesxji.ipfs.w3s.link/logo.png",
+        external_link: communityURL,
+      };
 
-    console.log(uploadedLogoFile);
+      const blob = new Blob([JSON.stringify(formData)], {
+        type: "application/json",
+      });
 
-    // Request made to the backend api
-    // await axios.post("api/uploadfile", formData);
-    console.log("logo file successfully uploaded");
-    // return uploadedLogoURL;
-  };
+      const files = [new File([blob], "metadata.json")];
+      return files;
+    },
+    [communityDescription, communityName, communityURL]
+  );
+
+  const uploadMetadata = useCallback(async () => {
+    let imageCID;
+    if (uploadedLogoFile) {
+      const blob = new Blob([uploadedLogoFile], { type: "image/png" });
+      const imageFiles = [new File([blob], "logo.png")];
+      imageCID = await client.put(imageFiles);
+      console.log("uploaded imageCID: ", imageCID);
+    }
+    const files = imageCID ? getFilesObject(imageCID) : getFilesObject();
+    const cid = await client.put(files);
+    console.log("uploaded metadataCID:", cid);
+    const uri = `https://${cid}.ipfs.w3s.link/metadata.json`;
+    return uri;
+  }, [getFilesObject, uploadedLogoFile]);
+
+  const publishNFT = useCallback(async () => {
+    setLoading(true);
+    try {
+      const collectionURI = await uploadMetadata();
+      const response = await fetch("http://localhost:3001/deploy", {
+        method: "POST",
+        body: JSON.stringify({
+          tokenSupply: tokenSupply,
+          name: `${communityName} Community NFT`,
+          symbol: communitySymbol,
+          collectionURI: collectionURI,
+        }),
+        headers: {
+          "content-type": "application/json",
+          "Access-Control-Allow-Origin": "*",
+        },
+      });
+      const data = await response.json();
+      setPublishedContract(data.contractAddress);
+      saveContract(data.contractAddress);
+    } catch (err) {
+      console.log("Error request: ", err);
+    }
+    setLoading(false);
+  }, [
+    communityName,
+    communitySymbol,
+    saveContract,
+    tokenSupply,
+    uploadMetadata,
+  ]);
 
   const handleNameChange = (event: any) => {
-    console.log("name: ", event.target.value);
     setCommunityName(event.target.value);
   };
 
+  const handleSymbolChange = (event: any) => {
+    const ticker = event.target.value.toUpperCase();
+    setCommunitySymbol(ticker);
+  };
+
   const handleDescriptionChange = (event: any) => {
-    console.log("name: ", event.target.value);
     setCommunityDescription(event.target.value);
   };
 
+  const handleURLChange = (event: any) => {
+    setCommunityURL(event.target.value);
+  };
+
   const handleProtocolChange = (event: any) => {
-    console.log("protocol: ", event.target.value);
     setProtocolAddress(event.target.value);
   };
 
   const handleGithubURLChange = (event: any) => {
-    console.log("github: ", event.target.value);
     setGithubURL(event.target.value);
   };
 
   const handleTokenSupplyChange = (event: any) => {
-    console.log("token supply: ", event.target.value);
     setTokenSupply(event.target.value);
   };
 
   const toggleRank = (event: any) => {
-    console.log("event: ", event.target.checked);
     setShowRank(event.target.checked);
   };
 
   const toggleTier = (event: any) => {
-    console.log("event: ", event.target.checked);
     setShowTier(event.target.checked);
   };
 
@@ -157,21 +227,35 @@ const Builder = () => {
     setSelectedSocial(e.target.value);
   }
 
+  if (!userAddress) {
+    return <div>Please connect wallet to continue</div>;
+  }
+
   return (
     <HStack className={styles.container}>
       {!publishedContract ? (
         <>
           <Editor
+            address={userAddress}
             publishNFT={publishNFT}
             setSelectedTheme={setSelectedTheme}
             selectedTheme={selectedTheme}
             handleFileChange={handleFileChange}
             uploadedLogoFile={uploadedLogoFile}
             handleNameChange={handleNameChange}
+            communityName={communityName}
+            handleSymbolChange={handleSymbolChange}
+            communitySymbol={communitySymbol}
             handleDescriptionChange={handleDescriptionChange}
+            communityDescription={communityDescription}
+            handleURLChange={handleURLChange}
+            communityURL={communityURL}
             handleProtocolChange={handleProtocolChange}
+            protocolAddress={protocolAddress}
             handleGithubURLChange={handleGithubURLChange}
+            githubURL={githubURL}
             handleTokenSupplyChange={handleTokenSupplyChange}
+            tokenSupply={tokenSupply}
             handleSelectSocial={handleSelectSocial}
             selectedSocial={selectedSocial}
             toggleRank={toggleRank}
@@ -180,6 +264,7 @@ const Builder = () => {
           />
           <Box className={styles.spacer}></Box>
           <Artwork
+            address={userAddress}
             selectedTheme={selectedTheme}
             uploadedLogoFile={uploadedLogoFile}
             uploadedLogoURL={uploadedLogoURL}
@@ -190,22 +275,31 @@ const Builder = () => {
         </>
       ) : (
         <VStack w="100%">
-          <Image
-            src="/buidl.png"
-            alt="nft sample"
-            cursor="pointer"
-            className={styles.logo}
-            w="700px"
-          ></Image>
+          <ArtworkPreview
+            address={userAddress}
+            selectedTheme={selectedTheme}
+            uploadedLogoFile={uploadedLogoFile}
+            uploadedLogoURL={uploadedLogoURL}
+            tokenSupply={tokenSupply}
+            showRank={showRank}
+            showTier={showTier}
+          />
           <Text>
             The BUIDL IT DAO Community NFT has been successfully published!
           </Text>
-          <a
+          {/* <a
             href={`https://polygonscan.com/address/${publishedContract}`}
             rel="noreferrer"
             target="_blank"
           >
             <Text>{`Polygonscan: https://polygonscan.com/address/${publishedContract}`}</Text>
+          </a> */}
+          <a
+            href={`https://rinkeby.etherscan.io/address/${publishedContract}`}
+            rel="noreferrer"
+            target="_blank"
+          >
+            <Text>{`Etherscan: https://rinkeby.etherscan.io/address/${publishedContract}`}</Text>
           </a>
           <Link href={`/mint/${publishedContract}`}>
             <Text>{`Shareable Link: http://app.credly.fun/mint/${publishedContract}`}</Text>
@@ -217,16 +311,26 @@ const Builder = () => {
 };
 
 type EditorProps = {
+  address: string;
   publishNFT: () => void;
   selectedTheme: string;
   setSelectedTheme: (theme: string) => void;
   handleFileChange: (event: any) => void;
   uploadedLogoFile: any;
   handleNameChange: (event: any) => void;
+  communityName: string;
+  handleSymbolChange: (event: any) => void;
+  communitySymbol: string;
   handleDescriptionChange: (event: any) => void;
+  communityDescription: string;
+  handleURLChange: (event: any) => void;
+  communityURL: string;
   handleProtocolChange: (event: any) => void;
+  protocolAddress: string;
   handleGithubURLChange: (event: any) => void;
+  githubURL: string;
   handleTokenSupplyChange: (event: any) => void;
+  tokenSupply: string;
   handleSelectSocial: (e: any) => void;
   selectedSocial: string;
   toggleRank: (event: any) => void;
@@ -235,16 +339,26 @@ type EditorProps = {
 };
 
 const Editor = ({
+  address,
   publishNFT,
   selectedTheme,
   setSelectedTheme,
   handleFileChange,
   uploadedLogoFile,
   handleNameChange,
+  communityName,
+  handleSymbolChange,
+  communitySymbol,
   handleDescriptionChange,
+  communityDescription,
+  handleURLChange,
+  communityURL,
   handleProtocolChange,
+  protocolAddress,
   handleGithubURLChange,
+  githubURL,
   handleTokenSupplyChange,
+  tokenSupply,
   handleSelectSocial,
   selectedSocial,
   toggleRank,
@@ -257,16 +371,38 @@ const Editor = ({
         <Text className={styles.editorHeader}>Community Name</Text>
         <Input
           className={styles.editorInput}
-          placeholder="Enter the name of your community"
+          value={communityName}
+          placeholder="Enter the name of your community to be used for the collection (e.g. BUIDL IT DAO)"
           onChange={handleNameChange}
+        />
+      </VStack>
+      <VStack className={styles.section}>
+        <Text className={styles.editorHeader}>Collection Symbol</Text>
+        <Input
+          value={communitySymbol}
+          className={styles.editorInput}
+          maxLength={6}
+          placeholder="Enter the ticker to be used on your community NFT (e.g. CNFT)"
+          onChange={handleSymbolChange}
         />
       </VStack>
       <VStack className={styles.section}>
         <Text className={styles.editorHeader}>Description</Text>
         <Input
           className={styles.editorInput}
-          placeholder="Enter a description for your community NFT"
+          value={communityDescription}
+          placeholder="Enter a description for your community NFT (e.g. the best DAO)"
           onChange={handleDescriptionChange}
+        />
+      </VStack>
+      <VStack className={styles.section}>
+        <Text className={styles.editorHeader}>Community Link</Text>
+        <Input
+          className={styles.editorInput}
+          value={communityURL}
+          type="url"
+          placeholder="Enter a link to your community website for the collection (e.g. https://buidl.it)"
+          onChange={handleURLChange}
         />
       </VStack>
       <VStack className={styles.section}>
@@ -274,7 +410,11 @@ const Editor = ({
         <HStack className={styles.templateSelectionContainer} gap={1}>
           {themes.map(
             ({ id, name, foregroundClassname, backgroundClassname }) => (
-              <VStack key={name} onClick={() => setSelectedTheme(id)}>
+              <VStack
+                key={name}
+                onClick={() => setSelectedTheme(id)}
+                cursor="pointer"
+              >
                 <Box
                   className={`${styles.themeContainer} ${
                     styles[backgroundClassname]
@@ -289,9 +429,11 @@ const Editor = ({
             )
           )}
           <VStack>
-            <Box className={styles.addCustomContainer}>
-              <Text fontSize="6xl">+</Text>
-            </Box>
+            <Tooltip label="Feature coming soon">
+              <Box className={styles.addCustomContainer} cursor="not-allowed">
+                <Text fontSize="6xl">+</Text>
+              </Box>
+            </Tooltip>
             <Text>Add Custom</Text>
           </VStack>
         </HStack>
@@ -319,6 +461,7 @@ const Editor = ({
         <Text className={styles.editorHeader}>Protocol XP</Text>
         <Input
           className={styles.editorInput}
+          value={protocolAddress}
           placeholder="Enter Contract Address"
           onChange={handleProtocolChange}
         />
@@ -331,6 +474,7 @@ const Editor = ({
         <Text className={styles.editorHeader}>Developer XP</Text>
         <Input
           className={styles.editorInput}
+          value={githubURL}
           placeholder="Enter Github Repo URL (e.g. https://github.com/iamminci...)"
           onChange={handleGithubURLChange}
         />
@@ -353,18 +497,28 @@ const Editor = ({
             <option value="option2">Twitter</option>
             <option value="option3">Telegram</option>
           </Select>
-          <a
-            href="https://discord.com/api/oauth2/authorize?client_id=1004630657886072833&permissions=8591056896&scope=bot"
-            rel="noreferrer"
-            target="_blank"
+          <Tooltip
+            label={
+              !selectedSocial
+                ? "Please select a social platform to continue"
+                : selectedSocial !== "discord"
+                ? "Feature coming soon"
+                : ""
+            }
           >
-            <Button
-              disabled={selectedSocial !== "discord"}
-              className={styles.editorButton}
+            <a
+              href="https://discord.com/api/oauth2/authorize?client_id=1004630657886072833&permissions=8591056896&scope=bot"
+              rel="noreferrer"
+              target="_blank"
             >
-              Link
-            </Button>
-          </a>
+              <Button
+                disabled={selectedSocial !== "discord"}
+                className={styles.editorButton}
+              >
+                Link
+              </Button>
+            </a>
+          </Tooltip>
         </HStack>
         <Select placeholder="Select option" className={styles.editorSelect}>
           <option value="option1">Minutes on Community Voice Chat</option>
@@ -384,16 +538,21 @@ const Editor = ({
         <Input
           className={styles.editorInput}
           placeholder="1 - 10000"
+          value={tokenSupply}
           onChange={handleTokenSupplyChange}
         />
       </VStack>
       <VStack className={styles.section}>
         <Text className={styles.editorHeader}>Metadata Update Interval</Text>
-        <Select placeholder="Select option" className={styles.editorSelect}>
-          <option value="option1">Every Minute</option>
-          <option value="option1">Every Day</option>
-          <option value="option1">Every Week</option>
-          <option value="option1">Every Month</option>
+        <Select
+          placeholder="Select option"
+          className={styles.editorSelect}
+          onChange={() => {}}
+        >
+          {/* <option value="option1">Every Minute</option> */}
+          <option value="day">Every Day</option>
+          <option value="week">Every Week</option>
+          <option value="month">Every Month</option>
         </Select>
       </VStack>
       <VStack className={styles.section}>
@@ -417,6 +576,7 @@ const Editor = ({
 };
 
 type ArtworkProps = {
+  address: string;
   selectedTheme: string;
   uploadedLogoFile: any;
   uploadedLogoURL: string;
@@ -426,6 +586,7 @@ type ArtworkProps = {
 };
 
 const Artwork = ({
+  address,
   selectedTheme,
   uploadedLogoFile,
   uploadedLogoURL,
@@ -473,7 +634,9 @@ const Artwork = ({
           </Box>
           <HStack className={styles.headerStatsContainer}>
             <VStack className={styles.headerStatsLeftSection}>
-              <Text className={styles.walletHeader}>0x17...df</Text>
+              <Text className={styles.walletHeader}>
+                {abridgeAddressShort(address)}
+              </Text>
               {showTier ? (
                 <Text className={styles.tierHeader}>Platinum Tier</Text>
               ) : (
@@ -491,7 +654,7 @@ const Artwork = ({
                   >{`/ ${tokenSupply}`}</Text>
                 </HStack>
               )}
-              <HStack className={styles.headerScoreContainer}>
+              <HStack w="100%" h="100%">
                 <Box
                   className={`${styles.scoreBarContainer} ${
                     styles[`${selected.id}ScoreBar`]
@@ -569,4 +732,153 @@ const Artwork = ({
   );
 };
 
-export default Builder;
+const ArtworkPreview = ({
+  address,
+  selectedTheme,
+  uploadedLogoFile,
+  uploadedLogoURL,
+  tokenSupply,
+  showRank,
+  showTier,
+}: ArtworkProps) => {
+  const selected = themes.find((theme) => theme.id === selectedTheme)!;
+
+  return (
+    <VStack
+      className={`${styles.artworkPreviewContainer} ${
+        styles[selected.backgroundClassname]
+      }`}
+    >
+      <VStack
+        className={`${styles.artworkInnerContainer} ${
+          styles[selected.foregroundClassname2]
+        }`}
+      >
+        {uploadedLogoURL && (
+          <Image
+            src={uploadedLogoURL}
+            alt="community logo"
+            cursor="pointer"
+            className={styles.communityPreviewLogo}
+          ></Image>
+        )}
+        <VStack className={styles.artworkUpperPreviewSection}>
+          <Box className={styles[`${selected.id}PfpPreviewContainer`]}>
+            <Image
+              src="avatar.png"
+              alt="community logo"
+              cursor="pointer"
+              className={styles.pfp}
+            ></Image>
+            {showTier && (
+              <Image
+                src="platinum.png"
+                alt="community logo"
+                cursor="pointer"
+                className={styles.badge}
+              ></Image>
+            )}
+          </Box>
+          <HStack className={styles.headerStatsContainer}>
+            <VStack className={styles.headerStatsLeftSection}>
+              <Text className={styles.walletPreviewHeader}>
+                {abridgeAddressShort(address)}
+              </Text>
+              {showTier ? (
+                <Text className={styles.tierPreviewHeader}>Platinum Tier</Text>
+              ) : (
+                <Text className={styles.tierPreviewHeader}>Member</Text>
+              )}
+            </VStack>
+            <VStack className={styles.headerStatsPreviewRightSection}>
+              {!showRank ? (
+                <Text className={styles.rankPreviewLabel}>Total Score</Text>
+              ) : (
+                <HStack>
+                  <Text className={styles.rankPreviewLabel}>Rank #1</Text>
+                  <Text
+                    className={styles.rankTotalPreviewLabel}
+                  >{`/ ${tokenSupply}`}</Text>
+                </HStack>
+              )}
+              <HStack w="100%" h="100%">
+                <Box
+                  className={`${styles.scoreBarPreviewContainer} ${
+                    styles[`${selected.id}ScoreBar`]
+                  }`}
+                >
+                  <Box
+                    className={`${styles.scoreBar} ${
+                      styles[`${selected.id}Total`]
+                    }`}
+                  ></Box>
+                </Box>
+                <Text className={styles.scorePreviewLabel}>8.6</Text>
+              </HStack>
+            </VStack>
+          </HStack>
+        </VStack>
+        <hr
+          className={`${styles.previewDivider} ${
+            styles[`${selected.id}Divider`]
+          }`}
+        ></hr>
+        <HStack className={styles.individualStatsPreviewContainer}>
+          <VStack className={styles.individualStatsPreviewLeftSection}>
+            <Text className={styles.headerPreview}>Metrics</Text>
+            <Text className={styles.scoreTitlePreview}>Protocol XP</Text>
+            <Text className={styles.scoreTitlePreview}>Developer XP</Text>
+            <Text className={styles.scoreTitlePreview}>Community XP</Text>
+          </VStack>
+          <VStack className={styles.individualStatsPreviewRightSection}>
+            <Text className={styles.headerPreview}>Current Score</Text>
+            <HStack w="100%" h="100%">
+              <Box
+                className={`${styles.scoreBarPreviewContainer} ${
+                  styles[`${selected.id}ScoreBar`]
+                }`}
+              >
+                <Box
+                  className={`${styles.scoreBar} ${
+                    styles[`${selected.id}Protocol`]
+                  }`}
+                ></Box>
+              </Box>
+              <Text className={styles.scorePreviewLabel}>8.6</Text>
+            </HStack>
+            <HStack w="100%" h="100%">
+              <Box
+                className={`${styles.scoreBarPreviewContainer} ${
+                  styles[`${selected.id}ScoreBar`]
+                }`}
+              >
+                <Box
+                  className={`${styles.scoreBar} ${
+                    styles[`${selected.id}Developer`]
+                  }`}
+                ></Box>
+              </Box>
+              <Text className={styles.scorePreviewLabel}>8.6</Text>
+            </HStack>
+            <HStack w="100%" h="100%">
+              <Box
+                className={`${styles.scoreBarPreviewContainer} ${
+                  styles[`${selected.id}ScoreBar`]
+                }`}
+              >
+                <Box
+                  className={`${styles.scoreBar} ${
+                    styles[`${selected.id}Community`]
+                  }`}
+                ></Box>
+              </Box>
+              <Text className={styles.scorePreviewLabel}>8.6</Text>
+            </HStack>
+          </VStack>
+        </HStack>
+      </VStack>
+    </VStack>
+  );
+};
+
+export default withTransition(Builder);

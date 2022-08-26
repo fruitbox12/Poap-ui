@@ -2,6 +2,8 @@
 
 _Take your web3 community's engagement to the next level._
 
+Credly is a Community NFT-as-a-service platform powered by Polygon, providing an easy way for web3 communities to launch engagement NFTs. This project was built built for the Polygon BUIDL IT Hackathon.
+
 - Read more about the submission [here](https://devpost.com/software/giftly-mopqin).
 - Watch the demo video [here](https://vimeo.com/741907596).
 

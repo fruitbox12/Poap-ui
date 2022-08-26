@@ -10,6 +10,7 @@ import {
   Spacer,
   IconButton,
 } from "@chakra-ui/react";
+import type { NextPage } from "next";
 import styles from "@styles/Mint.module.css";
 import { useRouter } from "next/router";
 import { useAccount, useContractWrite, usePrepareContractWrite } from "wagmi";
@@ -20,8 +21,10 @@ import db from "@firebase/firebase";
 import { useCallback, useEffect, useState } from "react";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { FaGithub } from "react-icons/fa";
+import { abridgeAddress } from "@utils/abridgeAddress";
+import withTransition from "@components/withTransition";
 
-const Mint = () => {
+const Mint: NextPage = () => {
   const { address, isConnecting, isDisconnected } = useAccount();
 
   const router = useRouter();
@@ -241,11 +244,4 @@ const Mint = () => {
   );
 };
 
-export function abridgeAddress(address?: string) {
-  if (!address) return address;
-  const l = address.length;
-  if (l < 20) return address;
-  return `${address.substring(0, 6)}...${address.substring(l - 4, l)}`;
-}
-
-export default Mint;
+export default withTransition(Mint);

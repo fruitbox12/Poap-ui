@@ -201,9 +201,17 @@
   align-items: center;
 }
 
+.artworkPreviewContainer {
+  width: 600px;
+  height: 600px;
+  border-radius: 50px;
+  justify-content: center;
+  align-items: center;
+}
+
 .artworkInnerContainer {
-  width: 846px;
-  height: 846px;
+  width: 94%;
+  height: 94%;
 
   position: relative;
   border-radius: 50px;
@@ -231,7 +239,13 @@
 
 .artworkUpperSection {
   width: 100%;
-  height: 500px;
+  height: 67%;
+}
+
+.artworkUpperPreviewSection {
+  width: 100%;
+  height: 67%;
+  padding-bottom: 1rem;
 }
 
 .pfp {
@@ -245,40 +259,65 @@
 
 .badge {
   position: absolute;
-  width: 130px;
+  width: 37%;
   right: -1.5rem;
   bottom: -1rem;
 }
 
 .midnightPfpContainer {
   position: relative;
-  width: 357px;
-  height: 357px;
+  width: 50%;
+  height: 71.4%;
   border-radius: 50%;
   border: 6px solid #ffffff;
 }
 
+.midnightPfpPreviewContainer {
+  position: relative;
+  width: 50%;
+  height: 71.4%;
+  border-radius: 50%;
+  border: 3px solid #ffffff;
+}
+
 .creamPfpContainer {
   position: relative;
-  width: 357px;
-  height: 357px;
+  width: 50%;
   border-radius: 50%;
   border: 6px solid #cbcbcb;
 }
 
+.creamPfpPreviewContainer {
+  position: relative;
+  width: 50%;
+  border-radius: 50%;
+  border: 3px solid #cbcbcb;
+}
+
 .pastelPfpContainer {
   position: relative;
-  width: 357px;
-  height: 357px;
+  height: 71.4%;
   border-radius: 50%;
   border: 6px solid #9688bd;
+}
+
+.pastelPfpPreviewContainer {
+  position: relative;
+  height: 71.4%;
+  border-radius: 50%;
+  border: 3px solid #9688bd;
 }
 
 .divider {
   width: 845px;
   height: 0px;
 
-  border: 1px solid #393540;
+  border-bottom: 1px solid #393540;
+}
+
+.previewDivider {
+  width: 560px;
+  height: 0px;
 }
 
 .midnightDivider {
@@ -297,8 +336,16 @@
   font-family: "Montserrat";
   font-style: normal;
   font-weight: 700;
-  font-size: 48px;
+  font-size: 38px;
   line-height: 48px;
+}
+
+.walletPreviewHeader {
+  font-family: "Montserrat";
+  font-style: normal;
+  font-weight: 700;
+  font-size: 24px;
+  line-height: 24px;
 }
 
 .tierHeader {
@@ -306,6 +353,14 @@
   font-style: normal;
   font-weight: 400;
   font-size: 30px;
+  line-height: 28px;
+}
+
+.tierPreviewHeader {
+  font-family: "Montserrat";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 20px;
   line-height: 28px;
 }
 
@@ -332,12 +387,36 @@
   line-height: 26px;
 }
 
+.rankPreviewLabel {
+  font-family: "Montserrat";
+  font-style: normal;
+  font-weight: 700;
+  font-size: 24px;
+  line-height: 24px;
+}
+
+.rankTotalPreviewLabel {
+  font-family: "Montserrat";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 16px;
+}
+
 .communityLogo {
   position: absolute;
-  width: 140px;
-  height: 140px;
-  left: 10px;
-  top: 10px;
+  width: 100px;
+  height: 100px;
+  left: 30px;
+  top: 30px;
+}
+
+.communityPreviewLogo {
+  position: absolute;
+  width: 80px;
+  height: 80px;
+  left: 20px;
+  top: 20px;
 }
 
 .headerStatsContainer {
@@ -363,6 +442,14 @@
   padding-top: 0.5rem;
 }
 
+.headerStatsPreviewRightSection {
+  width: 50%;
+  display: flex;
+  height: 100%;
+  justify-content: flex-end !important;
+  align-items: flex-start !important;
+}
+
 .scoreContainer {
   padding-top: 0.5rem;
 }
@@ -376,6 +463,15 @@
   padding-left: 8px;
 }
 
+.scorePreviewLabel {
+  font-family: "Montserrat";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 20px;
+  line-height: 20px;
+  padding-left: 8px;
+}
+
 .scoreTitle {
   font-family: "Montserrat";
   font-style: normal;
@@ -384,10 +480,27 @@
   line-height: 36px;
 }
 
+.scoreTitlePreview {
+  font-family: "Montserrat";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 20px;
+  line-height: 20px;
+}
+
 .scoreBarContainer {
   position: relative;
   width: 310px;
-  height: 15px;
+  height: 41.6%;
+
+  background: rgba(217, 217, 217, 0.59);
+  border-radius: 10px;
+}
+
+.scoreBarPreviewContainer {
+  position: relative;
+  width: 100%;
+  height: 30%;
 
   background: rgba(217, 217, 217, 0.59);
   border-radius: 10px;
@@ -456,6 +569,13 @@
   align-items: center;
 }
 
+.individualStatsPreviewContainer {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 .individualStatsLeftSection {
   width: 50%;
   height: 210px;
@@ -473,11 +593,37 @@
   align-items: flex-start !important;
 }
 
+.individualStatsPreviewLeftSection {
+  width: 50%;
+  height: 80%;
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start !important;
+  gap: 0.3rem;
+}
+
+.individualStatsPreviewRightSection {
+  width: 50%;
+  height: 80%;
+  display: flex;
+  justify-content: flex-start !important;
+  align-items: flex-start !important;
+  gap: 0.3rem;
+}
+
 .header {
   font-family: "Montserrat";
   font-style: normal;
   font-weight: 700;
   font-size: 36px;
+}
+
+.headerPreview {
+  font-family: "Montserrat";
+  font-style: normal;
+  font-weight: 700;
+  font-size: 26px;
+  line-height: 26px;
 }
 
 .publishButton {
