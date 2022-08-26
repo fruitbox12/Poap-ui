@@ -158,19 +158,22 @@ const Builder = () => {
     setLoading(true);
     try {
       const collectionURI = await uploadMetadata();
-      const response = await fetch("http://localhost:3001/deploy", {
-        method: "POST",
-        body: JSON.stringify({
-          tokenSupply: tokenSupply,
-          name: `${communityName} Community NFT`,
-          symbol: communitySymbol,
-          collectionURI: collectionURI,
-        }),
-        headers: {
-          "content-type": "application/json",
-          "Access-Control-Allow-Origin": "*",
-        },
-      });
+      const response = await fetch(
+        "https://credly-server-prod.onrender.com/deploy",
+        {
+          method: "POST",
+          body: JSON.stringify({
+            tokenSupply: tokenSupply,
+            name: `${communityName} Community NFT`,
+            symbol: communitySymbol,
+            collectionURI: collectionURI,
+          }),
+          headers: {
+            "content-type": "application/json",
+            "Access-Control-Allow-Origin": "*",
+          },
+        }
+      );
       const data = await response.json();
       setPublishedContract(data.contractAddress);
       saveContract(data.contractAddress);
@@ -287,23 +290,16 @@ const Builder = () => {
           <Text>
             The BUIDL IT DAO Community NFT has been successfully published!
           </Text>
-          {/* <a
+          <a
             href={`https://polygonscan.com/address/${publishedContract}`}
             rel="noreferrer"
             target="_blank"
           >
             <Text>{`Polygonscan: https://polygonscan.com/address/${publishedContract}`}</Text>
-          </a> */}
-          <a
-            href={`https://rinkeby.etherscan.io/address/${publishedContract}`}
-            rel="noreferrer"
-            target="_blank"
-          >
-            <Text>{`Etherscan: https://rinkeby.etherscan.io/address/${publishedContract}`}</Text>
           </a>
-          <Link href={`/mint/${publishedContract}`}>
-            <Text>{`Shareable Link: http://app.credly.fun/mint/${publishedContract}`}</Text>
-          </Link>
+          {/* <Link href={`/mint/${publishedContract}`}> */}
+          <Text>{`Shareable Link: http://app.credly.fun/mint/${publishedContract}`}</Text>
+          {/* </Link> */}
         </VStack>
       )}
     </HStack>
