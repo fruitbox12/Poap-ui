@@ -125,3 +125,448 @@
   font-size: 18px;
   font-weight: 500;
 }
+
+/* ======= ARTWORK CSS ======== */
+
+.midnightDarkBg {
+  background: #100e14;
+}
+
+.midnightDarkFg {
+  background: #1a1820;
+  border: 1px solid #34313e;
+}
+
+.artworkContainer {
+  width: 900px;
+  height: 900px;
+  border-radius: 50px;
+  justify-content: center;
+  align-items: center;
+}
+
+.artworkPreviewContainer {
+  width: 600px;
+  height: 600px;
+  border-radius: 50px;
+  justify-content: center;
+  align-items: center;
+}
+
+.artworkInnerContainer {
+  width: 94%;
+  height: 94%;
+
+  position: relative;
+  border-radius: 50px;
+  padding: 3rem 4rem;
+  color: white;
+}
+
+.midnightDarkArtworkFg {
+  background: #1a1820;
+  border: 2px solid #34313e;
+  color: white;
+}
+
+.solidCreamArtworkFg {
+  background: #ffffff;
+  border: 2px solid #e3e3e3;
+  color: #939393;
+}
+
+.pastelLavenderArtworkFg {
+  background: #d4c8f5;
+  border: 2px solid #9688bd;
+  color: #6d618e;
+}
+
+.artworkUpperSection {
+  width: 100%;
+  height: 67%;
+}
+
+.artworkUpperPreviewSection {
+  width: 100%;
+  height: 67%;
+  padding-bottom: 1rem;
+}
+
+.pfp {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.badge {
+  position: absolute;
+  width: 37%;
+  right: -1.5rem;
+  bottom: -1rem;
+}
+
+.midnightPfpContainer {
+  position: relative;
+  width: 50%;
+  height: 71.4%;
+  border-radius: 50%;
+  border: 6px solid #ffffff;
+}
+
+.midnightPfpPreviewContainer {
+  position: relative;
+  width: 50%;
+  height: 71.4%;
+  border-radius: 50%;
+  border: 3px solid #ffffff;
+}
+
+.creamPfpContainer {
+  position: relative;
+  width: 50%;
+  border-radius: 50%;
+  border: 6px solid #cbcbcb;
+}
+
+.creamPfpPreviewContainer {
+  position: relative;
+  width: 50%;
+  border-radius: 50%;
+  border: 3px solid #cbcbcb;
+}
+
+.pastelPfpContainer {
+  position: relative;
+  height: 71.4%;
+  border-radius: 50%;
+  border: 6px solid #9688bd;
+}
+
+.pastelPfpPreviewContainer {
+  position: relative;
+  height: 71.4%;
+  border-radius: 50%;
+  border: 3px solid #9688bd;
+}
+
+.divider {
+  width: 845px;
+  height: 0px;
+
+  border-bottom: 1px solid #393540;
+}
+
+.previewDivider {
+  width: 560px;
+  height: 0px;
+}
+
+.midnightDivider {
+  border: 1px solid #393540;
+}
+
+.creamDivider {
+  border: 1px solid #e0e0e0;
+}
+
+.pastelDivider {
+  border: 1px solid #9688bd;
+}
+
+.walletHeader {
+  font-family: "Montserrat";
+  font-style: normal;
+  font-weight: 700;
+  font-size: 38px;
+  line-height: 48px;
+}
+
+.walletPreviewHeader {
+  font-family: "Montserrat";
+  font-style: normal;
+  font-weight: 700;
+  font-size: 24px;
+  line-height: 24px;
+}
+
+.tierHeader {
+  font-family: "Montserrat";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 30px;
+  line-height: 28px;
+}
+
+.tierPreviewHeader {
+  font-family: "Montserrat";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 20px;
+  line-height: 28px;
+}
+
+.rankLabelContainer {
+  display: flex;
+  justify-content: flex-start !important;
+  align-items: flex-end !important;
+  width: 100%;
+}
+
+.rankLabel {
+  font-family: "Montserrat";
+  font-style: normal;
+  font-weight: 700;
+  font-size: 36px;
+  line-height: 36px;
+}
+
+.rankTotalLabel {
+  font-family: "Montserrat";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 20px;
+  line-height: 26px;
+}
+
+.rankPreviewLabel {
+  font-family: "Montserrat";
+  font-style: normal;
+  font-weight: 700;
+  font-size: 24px;
+  line-height: 24px;
+}
+
+.rankTotalPreviewLabel {
+  font-family: "Montserrat";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 16px;
+}
+
+.communityLogo {
+  position: absolute;
+  width: 100px;
+  height: 100px;
+  left: 30px;
+  top: 30px;
+}
+
+.communityPreviewLogo {
+  position: absolute;
+  width: 80px;
+  height: 80px;
+  left: 20px;
+  top: 20px;
+}
+
+.headerStatsContainer {
+  width: 100%;
+  justify-content: center;
+  padding-top: 2rem;
+}
+
+.headerStatsLeftSection {
+  width: 50%;
+  display: flex;
+  height: 100%;
+  justify-content: flex-start !important;
+  align-items: flex-start !important;
+}
+
+.headerStatsRightSection {
+  width: 50%;
+  display: flex;
+  height: 100%;
+  justify-content: flex-end !important;
+  align-items: flex-start !important;
+  padding-top: 0.5rem;
+}
+
+.headerStatsPreviewRightSection {
+  width: 50%;
+  display: flex;
+  height: 100%;
+  justify-content: flex-end !important;
+  align-items: flex-start !important;
+}
+
+.scoreContainer {
+  padding-top: 0.5rem;
+}
+
+.scoreLabel {
+  font-family: "Montserrat";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 26px;
+  line-height: 36px;
+  padding-left: 8px;
+}
+
+.scorePreviewLabel {
+  font-family: "Montserrat";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 20px;
+  line-height: 20px;
+  padding-left: 8px;
+}
+
+.scoreTitle {
+  font-family: "Montserrat";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 26px;
+  line-height: 36px;
+}
+
+.scoreTitlePreview {
+  font-family: "Montserrat";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 20px;
+  line-height: 20px;
+}
+
+.scoreBarContainer {
+  position: relative;
+  width: 310px;
+  height: 41.6%;
+
+  background: rgba(217, 217, 217, 0.59);
+  border-radius: 10px;
+}
+
+.scoreBarPreviewContainer {
+  position: relative;
+  width: 100%;
+  height: 30%;
+
+  background: rgba(217, 217, 217, 0.59);
+  border-radius: 10px;
+}
+
+.midnightScoreBar {
+  background: rgba(217, 217, 217, 0.59);
+}
+
+.creamScoreBar {
+  background: #e3e3e3;
+}
+
+.scoreBar {
+  position: absolute;
+  width: 75%;
+  height: 100%;
+
+  border-radius: 10px;
+}
+
+.midnightTotal {
+  background: #56ffeb;
+}
+
+.midnightProtocol {
+  background: #fffe56;
+}
+
+.midnightDeveloper {
+  background: #f09439;
+}
+
+.midnightCommunity {
+  background: #9056e0;
+}
+
+.creamTotal {
+  background: #cbfff9;
+}
+
+.creamProtocol {
+  background: #ffe600;
+}
+
+.creamDeveloper {
+  background: #fec790;
+}
+
+.creamCommunity {
+  background: #c69dff;
+}
+
+.pastelTotal,
+.pastelProtocol,
+.pastelDeveloper,
+.pastelCommunity {
+  background: #9688bd;
+}
+
+.individualStatsContainer {
+  padding-top: 1rem;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.individualStatsPreviewContainer {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.individualStatsLeftSection {
+  width: 50%;
+  height: 210px;
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start !important;
+  gap: 0.5rem;
+}
+
+.individualStatsRightSection {
+  width: 50%;
+  height: 210px;
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-start !important;
+}
+
+.individualStatsPreviewLeftSection {
+  width: 50%;
+  height: 80%;
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start !important;
+  gap: 0.3rem;
+}
+
+.individualStatsPreviewRightSection {
+  width: 50%;
+  height: 80%;
+  display: flex;
+  justify-content: flex-start !important;
+  align-items: flex-start !important;
+  gap: 0.3rem;
+}
+
+.headerPreview {
+  font-family: "Montserrat";
+  font-style: normal;
+  font-weight: 700;
+  font-size: 26px;
+  line-height: 26px;
+}
+
+.publishButton {
+  width: 169px;
+  height: 60px;
+
+  background: #0070f3 !important;
+  border-radius: 20px;
+}

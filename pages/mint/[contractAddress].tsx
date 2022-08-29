@@ -16,12 +16,12 @@ import { useRouter } from "next/router";
 import { useAccount, useContractWrite, usePrepareContractWrite } from "wagmi";
 
 import communityNFT from "@data/CommunityNFT.json";
-import { doc, setDoc, updateDoc, arrayUnion } from "firebase/firestore";
+import { doc, getDoc, setDoc, updateDoc, arrayUnion } from "firebase/firestore";
 import db from "@firebase/firebase";
 import { useCallback, useEffect, useState } from "react";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { FaGithub } from "react-icons/fa";
-import { abridgeAddress } from "@utils/abridgeAddress";
+import { abridgeAddress, abridgeAddressShort } from "@utils/abridgeAddress";
 import withTransition from "@components/withTransition";
 
 const Mint: NextPage = () => {
@@ -31,11 +31,16 @@ const Mint: NextPage = () => {
 
   const [githubUsername, setGithubUsername] = useState<string>("");
   const [discordUsername, setDiscordUsername] = useState<string>("");
-  const [uploadedLogoFile, setUploadedLogoFile] = useState<any>("");
-  const [uploadedLogoURL, setUploadedLogoURL] = useState<string>("");
+  const [uploadedPfpFile, setUploadedPfpFile] = useState<any>("");
+  const [uploadedPfpURL, setUploadedPfpURL] = useState<string>("");
   const [transactionHash, setTransactionHash] = useState<string>("");
 
+  const [logoURL, setLogoURL] = useState<string>("");
+  const [tokenSupply, setTokenSupply] = useState<string>("");
+  const [name, setName] = useState<string>("");
+
   const { contractAddress } = router.query;
+  console.log("contractAddress:", contractAddress);
   const nftAddress = contractAddress as string;
   // const loading = true;
 
@@ -50,6 +55,24 @@ const Mint: NextPage = () => {
   const { data: txn, isLoading, isSuccess, write } = useContractWrite(config);
 
   // const isLoading = true;
+
+  useEffect(() => {
+    async function fetchContractInfo() {
+      if (!nftAddress) return;
+      const docRef = doc(db, "contracts", nftAddress.toLowerCase());
+      const docSnap = await getDoc(docRef);
+      if (docSnap.exists()) {
+        const data = docSnap.data();
+        setName(data.name);
+        setLogoURL(data.logoURL);
+        setTokenSupply(data.tokenSupply);
+        console.log("data: ", data);
+      } else {
+        console.log("No such document!");
+      }
+    }
+    fetchContractInfo();
+  }, [nftAddress]);
 
   const saveUserInfo = useCallback(
     async (
@@ -84,8 +107,8 @@ const Mint: NextPage = () => {
     console.log("loaded file: ", event.target.files[0]);
     const file = event.target.files[0];
     const url = URL.createObjectURL(file);
-    setUploadedLogoURL(url);
-    setUploadedLogoFile(event.target.files[0]);
+    setUploadedPfpURL(url);
+    setUploadedPfpFile(event.target.files[0]);
   };
 
   useEffect(() => {
@@ -137,7 +160,7 @@ const Mint: NextPage = () => {
           <VStack gap={2}>
             <h1 className={styles.title}>Connect your wallet</h1>
             <Text className={styles.subtitle}>
-              Mint your BUIDL IT Community NFT for free!
+              {`Mint your ${name} Community NFT for free!`}
             </Text>
             <Spacer h="10px"></Spacer>
             <ConnectButton />
@@ -158,16 +181,23 @@ const Mint: NextPage = () => {
         </HStack>
       ) : (
         <HStack className={styles.container}>
-          <Image
+          {/* <Image
             src={uploadedLogoURL ? "/buidl2.png" : "/buidl.png"}
             alt="nft sample"
             cursor="pointer"
             className={styles.nft}
-          ></Image>
-
+          ></Image> */}
+          <ArtworkPreview
+            address={address}
+            uploadedPfpURL={uploadedPfpURL}
+            uploadedLogoURL={logoURL}
+            tokenSupply={tokenSupply}
+            showRank={true}
+            showTier={true}
+          />
           <VStack className={styles.mintContainer} gap={10}>
             <VStack>
-              <Text className={styles.title}>BUIDL IT DAO Community NFT</Text>
+              <Text className={styles.title}>{`${name} Community NFT`}</Text>
               <Text className={styles.subtitle}>
                 Note this Community NFT is a non-transferrable, soul-bound
                 token.
@@ -180,9 +210,9 @@ const Mint: NextPage = () => {
                   <HStack w="100%">
                     <Box className={styles.logoNameSection}>
                       <Text color="white" fontSize=".7rem" opacity={0.7}>
-                        {!uploadedLogoFile
+                        {!uploadedPfpFile
                           ? "Please upload image with square dimensions."
-                          : uploadedLogoFile.name}
+                          : uploadedPfpFile.name}
                       </Text>
                     </Box>
                     <input
@@ -241,6 +271,152 @@ const Mint: NextPage = () => {
         </HStack>
       )}
     </>
+  );
+};
+
+type ArtworkProps = {
+  address: string;
+  uploadedPfpURL: string;
+  uploadedLogoURL: string;
+  tokenSupply: string;
+  showRank: boolean;
+  showTier: boolean;
+};
+
+const ArtworkPreview = ({
+  address,
+  uploadedPfpURL,
+  uploadedLogoURL,
+  tokenSupply,
+  showRank,
+  showTier,
+}: ArtworkProps) => {
+  console.log("uploadedLogoURL: ", uploadedLogoURL);
+  return (
+    <VStack
+      className={`${styles.artworkPreviewContainer} ${styles.midnightDarkBg}`}
+    >
+      <VStack
+        className={`${styles.artworkInnerContainer} ${styles.midnightDarkArtworkFg}`}
+      >
+        {uploadedLogoURL && (
+          <Image
+            src={uploadedLogoURL}
+            alt="community logo"
+            cursor="pointer"
+            className={styles.communityPreviewLogo}
+          ></Image>
+        )}
+        <VStack className={styles.artworkUpperPreviewSection}>
+          <Box className={styles[`midnightPfpPreviewContainer`]}>
+            <Image
+              src={uploadedPfpURL ? uploadedPfpURL : "../avatar.png"}
+              alt="community logo"
+              cursor="pointer"
+              className={styles.pfp}
+            ></Image>
+            {showTier && (
+              <Image
+                src="../platinum.png"
+                alt="community logo"
+                cursor="pointer"
+                className={styles.badge}
+              ></Image>
+            )}
+          </Box>
+          <HStack className={styles.headerStatsContainer}>
+            <VStack className={styles.headerStatsLeftSection}>
+              <Text className={styles.walletPreviewHeader}>
+                {abridgeAddressShort(address)}
+              </Text>
+              {showTier ? (
+                <Text className={styles.tierPreviewHeader}>Platinum Tier</Text>
+              ) : (
+                <Text className={styles.tierPreviewHeader}>Member</Text>
+              )}
+            </VStack>
+            <VStack className={styles.headerStatsPreviewRightSection}>
+              {!showRank ? (
+                <Text className={styles.rankPreviewLabel}>Total Score</Text>
+              ) : (
+                <HStack>
+                  <Text className={styles.rankPreviewLabel}>Rank #1</Text>
+                  <Text
+                    className={styles.rankTotalPreviewLabel}
+                  >{`/ ${tokenSupply}`}</Text>
+                </HStack>
+              )}
+              <HStack w="100%" h="100%">
+                <Box
+                  className={`${styles.scoreBarPreviewContainer} ${
+                    styles[`midnightScoreBar`]
+                  }`}
+                >
+                  <Box
+                    className={`${styles.scoreBar} ${styles[`midnightTotal`]}`}
+                  ></Box>
+                </Box>
+                <Text className={styles.scorePreviewLabel}>8.6</Text>
+              </HStack>
+            </VStack>
+          </HStack>
+        </VStack>
+        <hr
+          className={`${styles.previewDivider} ${styles[`midnightDivider`]}`}
+        ></hr>
+        <HStack className={styles.individualStatsPreviewContainer}>
+          <VStack className={styles.individualStatsPreviewLeftSection}>
+            <Text className={styles.headerPreview}>Metrics</Text>
+            <Text className={styles.scoreTitlePreview}>Protocol XP</Text>
+            <Text className={styles.scoreTitlePreview}>Developer XP</Text>
+            <Text className={styles.scoreTitlePreview}>Community XP</Text>
+          </VStack>
+          <VStack className={styles.individualStatsPreviewRightSection}>
+            <Text className={styles.headerPreview}>Current Score</Text>
+            <HStack w="100%" h="100%">
+              <Box
+                className={`${styles.scoreBarPreviewContainer} ${
+                  styles[`midnightScoreBar`]
+                }`}
+              >
+                <Box
+                  className={`${styles.scoreBar} ${styles[`midnightProtocol`]}`}
+                ></Box>
+              </Box>
+              <Text className={styles.scorePreviewLabel}>8.6</Text>
+            </HStack>
+            <HStack w="100%" h="100%">
+              <Box
+                className={`${styles.scoreBarPreviewContainer} ${
+                  styles[`midnightScoreBar`]
+                }`}
+              >
+                <Box
+                  className={`${styles.scoreBar} ${
+                    styles[`midnightDeveloper`]
+                  }`}
+                ></Box>
+              </Box>
+              <Text className={styles.scorePreviewLabel}>8.6</Text>
+            </HStack>
+            <HStack w="100%" h="100%">
+              <Box
+                className={`${styles.scoreBarPreviewContainer} ${
+                  styles[`midnightScoreBar`]
+                }`}
+              >
+                <Box
+                  className={`${styles.scoreBar} ${
+                    styles[`midnightCommunity`]
+                  }`}
+                ></Box>
+              </Box>
+              <Text className={styles.scorePreviewLabel}>8.6</Text>
+            </HStack>
+          </VStack>
+        </HStack>
+      </VStack>
+    </VStack>
   );
 };
 

@@ -14,12 +14,13 @@ import styles from "@styles/Builder.module.css";
 import { useCallback, useState } from "react";
 import { doc, setDoc } from "firebase/firestore";
 import db from "@firebase/firebase";
-import Link from "next/link";
 import withTransition from "@components/withTransition";
-import { useAccount } from "wagmi";
+import { useAccount, useSigner } from "wagmi";
 import { Tooltip } from "@chakra-ui/react";
 import { Web3Storage } from "web3.storage";
 import { abridgeAddressShort } from "@utils/abridgeAddress";
+import CommunityNFT from "@data/CommunityNFT.json";
+import { ethers } from "ethers";
 
 const WEB3_STORAGE_TOKEN =
   process.env.NEXT_PUBLIC_WEB3_STORAGE_API_KEY ??
@@ -61,6 +62,7 @@ const client = new Web3Storage({
 });
 
 const Builder = () => {
+  const { data: signer, isError } = useSigner();
   const { address: userAddress } = useAccount();
   const [publishedContract, setPublishedContract] = useState<string>("");
   const [selectedTheme, setSelectedTheme] = useState<string>("midnight");
@@ -78,8 +80,39 @@ const Builder = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [selectedSocial, setSelectedSocial] = useState<string>("");
 
+  async function deployContract() {
+    if (!signer) return;
+    setLoading(true);
+
+    try {
+      const [collectionURI, imageURI] = await uploadMetadata();
+
+      const contractFactory = new ethers.ContractFactory(
+        CommunityNFT.abi,
+        CommunityNFT.bytecode,
+        signer
+      );
+
+      const contract = await contractFactory.deploy(
+        tokenSupply,
+        `${communityName} Community NFT`,
+        communitySymbol,
+        collectionURI
+      );
+
+      console.log("contrat deployed");
+      console.log("contract: ", contract);
+      console.log("contract address: ", contract.address);
+      setPublishedContract(contract.address);
+      saveContract(contract.address, imageURI);
+    } catch (err) {
+      console.log(err);
+    }
+    setLoading(false);
+  }
+
   const saveContract = useCallback(
-    async (contractAddress: string) => {
+    async (contractAddress: string, imageURI: string) => {
       const docRef = doc(db, "contracts", contractAddress.toLowerCase());
       await setDoc(docRef, {
         owner: userAddress?.toLowerCase(),
@@ -96,6 +129,7 @@ const Builder = () => {
         githubRepoURL: githubURL ?? "https://github.com/iamminci/verbsdao",
         updateInterval: "monthly",
         createdAt: new Date(),
+        logoURL: imageURI,
       });
     },
     [
@@ -148,46 +182,14 @@ const Builder = () => {
       console.log("uploaded imageCID: ", imageCID);
     }
     const files = imageCID ? getFilesObject(imageCID) : getFilesObject();
+    const imageURI = imageCID
+      ? `https://${imageCID}.ipfs.w3s.link/logo.png`
+      : "https://bafybeidsw3nosqs6ydqwak2fry3wmb3dklgmml54n55j2jnu32zubesxji.ipfs.w3s.link/logo.png";
     const cid = await client.put(files);
     console.log("uploaded metadataCID:", cid);
-    const uri = `https://${cid}.ipfs.w3s.link/metadata.json`;
-    return uri;
+    const collectionURI = `https://${cid}.ipfs.w3s.link/metadata.json`;
+    return [collectionURI, imageURI];
   }, [getFilesObject, uploadedLogoFile]);
-
-  const publishNFT = useCallback(async () => {
-    setLoading(true);
-    try {
-      const collectionURI = await uploadMetadata();
-      const response = await fetch(
-        "https://credly-server-prod.onrender.com/deploy",
-        {
-          method: "POST",
-          body: JSON.stringify({
-            tokenSupply: tokenSupply,
-            name: `${communityName} Community NFT`,
-            symbol: communitySymbol,
-            collectionURI: collectionURI,
-          }),
-          headers: {
-            "content-type": "application/json",
-            "Access-Control-Allow-Origin": "*",
-          },
-        }
-      );
-      const data = await response.json();
-      setPublishedContract(data.contractAddress);
-      saveContract(data.contractAddress);
-    } catch (err) {
-      console.log("Error request: ", err);
-    }
-    setLoading(false);
-  }, [
-    communityName,
-    communitySymbol,
-    saveContract,
-    tokenSupply,
-    uploadMetadata,
-  ]);
 
   const handleNameChange = (event: any) => {
     setCommunityName(event.target.value);
@@ -240,7 +242,7 @@ const Builder = () => {
         <>
           <Editor
             address={userAddress}
-            publishNFT={publishNFT}
+            publishNFT={deployContract}
             setSelectedTheme={setSelectedTheme}
             selectedTheme={selectedTheme}
             handleFileChange={handleFileChange}
