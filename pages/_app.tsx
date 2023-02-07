@@ -64,7 +64,7 @@ const theme = extendTheme({
 // rainbow theme
 const customTheme = merge(darkTheme(), {
   colors: {
-    accentColor: "#3A76F2",
+    accentColor: "#c800ff",
   },
 } as Theme);
 
